@@ -19,8 +19,8 @@ namespace Proyect_1.ContextBD
                     string query = "SELECT password FROM login WHERE [user] = @name";
                     SqlCommand command = new SqlCommand(query, contextBD);
                     command.Parameters.AddWithValue("@name", model.Name);
-
                     var storedHash = command.ExecuteScalar()?.ToString();
+
                     if(model.Password != null)
                     {
                         model.Password = ComputeSha256Hash(model.Password);
