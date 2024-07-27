@@ -1,0 +1,46 @@
+﻿@model Proyect_1.Models.User
+
+
+@{
+    ViewData["Title"] = "Main";
+}
+
+<h1>MenuPrincipal</h1>
+<body>
+    <div>
+        <h4>@Model.Name</h4>
+        <hr />
+        <dl class="row">
+            <dd class="col-sm-10">
+                <span class="text-fosforescente">En Línea</span>
+            </dd>
+        </dl>
+    </div>
+    <div class="container mt-5 text-center">
+        <button class="rotatebox" onclick="window.location.href='@Url.Action("Logout", "Home")'">Cerrar Sesión</button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function checkSession() {
+        $.ajax({
+            url: '@Url.Action("CheckSession", "Home")',
+            method: 'GET',
+            success: function (data) {
+                if (!data.isAuthenticated) {
+                    alert("Tu sesión ha expirado. Serás redirigido a la página de inicio de sesión.");
+                    window.location.href = '@Url.Action("Login", "Home")';
+                }
+            },
+            error: function () {
+                console.error("Error al verificar la sesión.");
+            }
+        });
+    }
+
+    setInterval(checkSession, 60000); // Verifica la sesión cada 60 segundos
+</script>
