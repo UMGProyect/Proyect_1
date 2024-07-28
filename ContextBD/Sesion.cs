@@ -20,7 +20,7 @@ namespace Proyect_1.ContextBD
                     SqlCommand command = new SqlCommand(query, contextBD);
                     command.Parameters.AddWithValue("@name", model.Name);
                     var storedHash = command.ExecuteScalar()?.ToString();
-
+                    // Example
                     if(model.Password != null)
                     {
                         model.Password = ComputeSha256Hash(model.Password);
