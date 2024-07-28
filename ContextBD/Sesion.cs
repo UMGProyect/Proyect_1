@@ -19,7 +19,7 @@ namespace Proyect_1.ContextBD
                     string query = "SELECT password FROM login WHERE [user] = @name";
                     SqlCommand command = new SqlCommand(query, contextBD);
                     command.Parameters.AddWithValue("@name", model.Name);
-                    var storedHash = command.ExecuteScalar()?.ToString();
+                    string? storedHash = command.ExecuteScalar()?.ToString();
                     //Cierre de conexión a la BD. 
                     contextBD.Close();
                     // validación de integridad de datos NO NULL.
@@ -55,7 +55,7 @@ namespace Proyect_1.ContextBD
 
             // SHA-256
             var hash = password; //= ComputeSha256Hash(password);
-            return hash == storedHash;
+            return hash == storedHash.Trim();
         }
         //encrypt Password.
         private string ComputeSha256Hash(string rawData)
