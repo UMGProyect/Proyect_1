@@ -20,7 +20,9 @@ namespace Proyect_1.ContextBD
                     SqlCommand command = new SqlCommand(query, contextBD);
                     command.Parameters.AddWithValue("@name", model.Name);
                     var storedHash = command.ExecuteScalar()?.ToString();
-                    // Example
+                    //Cierre de conexión a la BD. 
+                    contextBD.close();
+                    // validación de integridad de datos NO NULL.
                     if(model.Password != null)
                     {
                         model.Password = ComputeSha256Hash(model.Password);
@@ -55,7 +57,7 @@ namespace Proyect_1.ContextBD
             var hash = password; //= ComputeSha256Hash(password);
             return hash == storedHash;
         }
-
+        //encrypt Password.
         private string ComputeSha256Hash(string rawData)
         {
             using (SHA256 sha256Hash = SHA256.Create())
