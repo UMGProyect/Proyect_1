@@ -55,6 +55,7 @@ namespace Proyect_1.ContextBD
 
             // SHA-256
             var hash = password; //= ComputeSha256Hash(password);
+            // Se elimino los espacios en blancos de la variable storedHash.
             return hash == storedHash.Trim();
         }
         //encrypt Password.
