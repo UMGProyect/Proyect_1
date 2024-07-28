@@ -2,7 +2,7 @@
 {
     public class BD
     {
-        //Conexion a la Base de datos SQL
-        public static string connectionString = "Server=DESKTOP-RCOQL3Q; Initial Catalog = Telecomunicaciones; Trusted_Connection=True;TrustServerCertificate=true;";
+        //Conexion a la Base de datos SQL Server
+        public static string connectionString = "Server=PCQ3_SERVER; Initial Catalog = SQ_BD; Trusted_Connection=True;TrustServerCertificate=true;";
     }
 }
