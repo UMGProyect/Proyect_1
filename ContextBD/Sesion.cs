@@ -21,7 +21,7 @@ namespace Proyect_1.ContextBD
                     command.Parameters.AddWithValue("@name", model.Name);
                     var storedHash = command.ExecuteScalar()?.ToString();
                     //Cierre de conexión a la BD. 
-                    contextBD.close();
+                    contextBD.Close();
                     // validación de integridad de datos NO NULL.
                     if(model.Password != null)
                     {
