@@ -8,6 +8,7 @@ namespace Proyect_1.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        //Instancia de sesión.
         private readonly Sesion iniciar_sesion = new Sesion();
         public HomeController(ILogger<HomeController> logger)
         {
@@ -41,7 +42,7 @@ namespace Proyect_1.Controllers
 
             return View(model);
         }
-
+        //Manejo de solicitud POST.
         [HttpPost]
         public IActionResult Login(User model)
         {
