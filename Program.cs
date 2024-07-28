@@ -4,9 +4,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(1); ; // Tiempo de expiraci髇 de la sesi髇
-    options.Cookie.HttpOnly = true; // Hacer las cookies de sesi髇 solo HTTP
-    options.Cookie.IsEssential = true; // Asegurarse de que la cookie es esencial para la aplicaci髇
+    options.IdleTimeout = TimeSpan.FromMinutes(2); ; // Tiempo de expiraci贸n de la sesi贸n
+    options.Cookie.HttpOnly = true; // Hacer las cookies de sesi贸n solo HTTP
+    options.Cookie.IsEssential = true; // Asegurarse de que la cookie es esencial para la aplicaci贸n
 });
 var app = builder.Build();
 
@@ -17,14 +17,14 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+     // redireccionar la conexion.
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
 app.UseAuthorization();
-
+// manejo de sesion en contexto para el controlador.
 app.UseSession();
 
 app.MapControllerRoute(
