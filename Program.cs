@@ -4,7 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(1); ; // Tiempo de expiración de la sesión
+    options.IdleTimeout = TimeSpan.FromMinutes(2); ; // Tiempo de expiración de la sesión
     options.Cookie.HttpOnly = true; // Hacer las cookies de sesión solo HTTP
     options.Cookie.IsEssential = true; // Asegurarse de que la cookie es esencial para la aplicación
 });
