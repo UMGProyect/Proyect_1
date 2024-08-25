@@ -46,7 +46,6 @@ namespace Proyect_1.Controllers
         [HttpPost]
         public IActionResult Login(User model)
         {
-
             if (ModelState.IsValid)
             {
                 bool User_Authenticator = iniciar_sesion.Authenticator(model);
@@ -57,7 +56,6 @@ namespace Proyect_1.Controllers
                     HttpContext.Session.SetString("UserName", model.Name);
                     HttpContext.Session.SetString("IsAuthenticated", "true");
                     return RedirectToAction("Main");
-
                 }
                 else
                 {
