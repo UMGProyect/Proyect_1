@@ -9,7 +9,7 @@ namespace Proyect_1.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         //Instancia de sesión.
-        private readonly Sesion iniciar_sesion = new Sesion();
+        private readonly Sesion iniciar_sesion = new();
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -48,6 +48,7 @@ namespace Proyect_1.Controllers
         {
             if (ModelState.IsValid)
             {
+                SentrySdk.CaptureMessage("Hello Sentry");
                 bool User_Authenticator = iniciar_sesion.Authenticator(model);
 
                 if (User_Authenticator && model.Name != null)
