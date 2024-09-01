@@ -48,7 +48,7 @@ namespace Proyect_1.Controllers
         {
             if (ModelState.IsValid)
             {
-                SentrySdk.CaptureMessage("Hello Sentry");
+                //SentrySdk.CaptureMessage("Hello Sentry");
                 bool User_Authenticator = iniciar_sesion.Authenticator(model);
 
                 if (User_Authenticator && model.Name != null)
