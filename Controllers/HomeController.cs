@@ -138,7 +138,8 @@ namespace Proyect_1.Controllers
                 }
                 catch (Exception ex)
                 {
-                    SentrySdk.CaptureException(ex);
+                HttpContext.Session.SetString("ErrorId", ex.Message);
+                
                     var errorReport = new ErrorReport
                     {
                         ErrorDetectado = "¡Se encontró un error!"
@@ -235,17 +236,21 @@ namespace Proyect_1.Controllers
         [HttpPost]
         public IActionResult ReportError(ErrorReport model)
         {
-            if (ModelState.IsValid)
-            {
-                // Captura el mensaje del usuario en Sentry
-                SentrySdk.CaptureMessage($"Error reportado por el usuario: {model.Description}");
 
-                // Redirige o muestra un mensaje de confirmación
-                return RedirectToAction("Login");
-            }
+            // Obtener el mismo identificador único almacenado previamente
+            string errorId = HttpContext.Session.GetString("ErrorId");
+
+            // Configurar el scope para agregar el ErrorId
+
+            // Capturar el mensaje asociado al reporte de error
+            SentrySdk.CaptureMessage($"Error reportado por el usuario: {model.Description}  Horror encontrado: {errorId}");
+
+            // Redirigir o mostrar un mensaje de confirmación
+            return RedirectToAction("Login");
+
 
             // Si el modelo no es valido, vuelve a mostrar el formulario
-            return View("UserReportsBugs", model);
+            //return View("UserReportsBugs", model);
         }
     }
 }

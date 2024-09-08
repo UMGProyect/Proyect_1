@@ -44,7 +44,7 @@ namespace Proyect_1.ContextBD
                 {
                     // Manejar el error de manera más robusta
                     Console.WriteLine($"Error al autenticar al usuario: {ex.Message}");
-                    throw new Exception("{ex.Message}");
+                    throw new Exception("Linea de codigo: 47, problema con la conexion a la base de datos (ContextBD.Open)" + ex.Message);
                     throw;
 
                 }
