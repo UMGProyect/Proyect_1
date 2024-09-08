@@ -72,5 +72,30 @@ namespace Proyect_1.Controllers
             HttpContext.Session.Clear(); // Dejamos limpia la sesion
             return RedirectToAction("Login"); // Redirigimos a la pagina de inicio se sesion.
         }
+
+
+
+
+
+        public IActionResult UserReportsBugs()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ReportError(ErrorReport model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Captura el mensaje del usuario en Sentry
+                SentrySdk.CaptureMessage($"Error reportado por el usuario: {model.Description}");
+
+                // Redirige o muestra un mensaje de confirmación
+                return RedirectToAction("Login");
+            }
+
+            // Si el modelo no es valido, vuelve a mostrar el formulario
+            return View("UserReportsBugs", model);
+        }
     }
 }
