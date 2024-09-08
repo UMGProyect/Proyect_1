@@ -18,16 +18,38 @@
                 <input asp-for="Password" class="form-control" type="password" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
+
+            @if (ViewData["ShowCaptcha"] != null && (bool)ViewData["ShowCaptcha"])
+            {
+                <div class="form-group mb-4" id="captchaContainer">
+                    <label asp-for="Captcha">CAPTCHA</label>
+                    <input asp-for="Captcha" class="form-control" value=""/>
+                    <span asp-validation-for="Captcha" class="text-danger"></span>
+                    <img src="@Url.Action("CaptchaImage", "Home")" alt="CAPTCHA" />
+                </div>
+            }
+            
+
             <div class="form-group mb-4">
                 <button type="submit" class="btn btn-primary btn-block">Iniciar Sesión</button>
             </div>
         </form>
         <hr />
-        <div class="text-center">
-            <a asp-action="Register">Registrarse</a>
+        <div class="text-center">  
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="text-danger">
+                        @Html.ValidationSummary(true)
+                    </div>
+                }  
         </div>
     </div>
 </div>
+
+
+
+
+
 
 
 

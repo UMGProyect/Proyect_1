@@ -4,7 +4,7 @@
     ViewData["Title"] = "UserReportsBugs";
 }
 
-<h1>UserReportsBugs</h1>
+<h1>@(Model.ErrorDetectado != null ? Model.ErrorDetectado : "UserReportsBugs")</h1>
 
 <h4>ErrorReport</h4>
 <hr />
@@ -27,7 +27,3 @@
 <div class="mt-3">
     <a asp-action="Login">Back to List</a>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
