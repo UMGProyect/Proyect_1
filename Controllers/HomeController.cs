@@ -6,11 +6,13 @@ using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Drawing;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Proyect_1.Controllers
 {
     public class HomeController : Controller
     {
+        
         private readonly ILogger<HomeController> _logger;
         //Instancia de sesión.
         private readonly Sesion iniciar_sesion = new();
@@ -51,21 +53,29 @@ namespace Proyect_1.Controllers
         [HttpPost]
         public IActionResult Login(User model)
         {
-            if (ModelState.IsValid)
-            {
+
+           
                 // Obtener el número de intentos fallidos desde la sesión
                 int loginAttempts = HttpContext.Session.GetInt32("LoginAttempts") ?? 0;
+
+                //Revisar esto. El captcha se valida para ver si entra en true o false desde https
+                //Se maneja otra validacion de captcha, se almacen en httpcontext el input del captcha antes de compararse.
+                string CaptchaValidation = HttpContext.Session.GetString("Captcha")?? "false";
+            var captchaInput = Request.Form["Captcha"].ToString().Trim('{', '}');
+
+            var captchaText = HttpContext.Session.GetString("CaptchaText");
+                
+                
+
                 loginAttempts++;
                 HttpContext.Session.SetInt32("LoginAttempts", loginAttempts);
                 // Mostrar CAPTCHA si se ha alcanzado el límite de intentos
-                if (loginAttempts >= 7)
+                if (loginAttempts >= 7 && CaptchaValidation=="false")
                 {
-                        model.Captcha = true;
+                    
+                    model.Captcha = true;
                         HttpContext.Session.SetString("Captcha", "true");
                         ViewData["ShowCaptcha"] = model.Captcha;
-
-                        var captchaInput = Request.Form["Captcha"];
-                        var captchaText = HttpContext.Session.GetString("CaptchaText");
 
                         if (captchaText != captchaInput)
                         {
@@ -75,13 +85,28 @@ namespace Proyect_1.Controllers
                     else if (  loginAttempts > 7)
                     {
                         HttpContext.Session.SetInt32("LoginAttempts", 0);
+                        model.Captcha = false;
                         HttpContext.Session.SetString("Captcha", "false");
+                        ViewData["ShowCaptcha"] = model.Captcha;
                     }
                 }
-             
+                
+                else if (captchaText != captchaInput && loginAttempts > 7 )
+                {
+                    model.Captcha = true;
+                    ViewData["ShowCaptcha"] = model.Captcha;
+                    ModelState.AddModelError("", "El CAPTCHA es incorrecto.");
+                    return View(model);
+                }else if (loginAttempts > 7)
+                {
+                    HttpContext.Session.SetInt32("LoginAttempts", 0);
+                    model.Captcha = false;
+                    HttpContext.Session.SetString("Captcha", "false");
+                    ViewData["ShowCaptcha"] = model.Captcha;
+                }
 
-                // Validaciones de entradas
-                if (string.IsNullOrWhiteSpace(model.Name) || string.IsNullOrWhiteSpace(model.Password))
+            // Validaciones de entradas
+            if (string.IsNullOrWhiteSpace(model.Name) || string.IsNullOrWhiteSpace(model.Password))
                 {
                     ModelState.AddModelError("", "El nombre de usuario y la contraseña no pueden estar vacíos.");
                     return View(model);
@@ -108,7 +133,8 @@ namespace Proyect_1.Controllers
                 bool User_Authenticator;
                 try
                 {
-                    User_Authenticator = iniciar_sesion.Authenticator(model);
+                    User_Authenticator = iniciar_sesion.Authenticator(model,"0");
+
                 }
                 catch (Exception ex)
                 {
@@ -117,7 +143,7 @@ namespace Proyect_1.Controllers
                     {
                         ErrorDetectado = "¡Se encontró un error!"
                     };
-                    return RedirectToAction("UserReportsBugs", errorReport);
+                    return View("UserReportsBugs", errorReport);
                 }
 
                 if (User_Authenticator && model.Name != null)
@@ -144,7 +170,7 @@ namespace Proyect_1.Controllers
 
                     return View(model);
                 }
-            }
+            
             return View(model);
         }
 
@@ -195,6 +221,10 @@ namespace Proyect_1.Controllers
         //Manejo de reportes - Sentry
 
 
+        public IActionResult SystemReport()
+        {
+            return View();
+        }
 
 
         public IActionResult UserReportsBugs()
