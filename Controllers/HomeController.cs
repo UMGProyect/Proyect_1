@@ -41,7 +41,7 @@ namespace Proyect_1.Controllers
 
         public IActionResult Login()
         {
-            HttpContext.Session.SetInt32("LoginAttempts", 7);
+            
             return View();
         }
 
@@ -52,11 +52,11 @@ namespace Proyect_1.Controllers
 
         public IActionResult Main(User model)
         {
-            //model.Name = HttpContext.Session.GetString("UserName");
-          //  if (HttpContext.Session.GetString("IsAuthenticated") != "true")
-          //  {
-           //     return RedirectToAction("Login");
-           // }
+            model.Name = HttpContext.Session.GetString("UserName");
+          if (HttpContext.Session.GetString("IsAuthenticated") != "true")
+          {
+               return RedirectToAction("Login");
+           }
 
             return View(model);
         }
@@ -76,6 +76,7 @@ namespace Proyect_1.Controllers
                     ModelState.AddModelError("", "Verificación de reCAPTCHA fallida. Inténtalo de nuevo.");
                     return View(model);
                 }
+                HttpContext.Session.Remove("LoginAttempts");
             }
             loginAttempts++;
             HttpContext.Session.SetInt32("LoginAttempts", loginAttempts);
