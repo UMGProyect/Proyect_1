@@ -19,40 +19,39 @@
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
-            @if (ViewData["ShowCaptcha"] != null && (bool)ViewData["ShowCaptcha"])
+            @if ((Context.Session.GetInt32("LoginAttempts") ?? 0) >= 5)
             {
-                <div class="form-group mb-4" id="captchaContainer">
-                    <label asp-for="Captcha">CAPTCHA</label>
-                    <input asp-for="Captcha" class="form-control" value=""/>
-                    <span asp-validation-for="Captcha" class="text-danger"></span>
-                    <img src="@Url.Action("CaptchaImage", "Home")" alt="CAPTCHA" />
+                <div class="form-group mb-4">
+                    <label>Verificación de reCAPTCHA</label>
+                    <div class="g-recaptcha" data-sitekey="6Lepo1gqAAAAAJqO1RhlNUP5wE5cN0ZV3CAbNeOU" data-callback="onCaptchaSuccess"></div>
+                    <span asp-validation-for="RecaptchaToken" class="text-danger"></span>
                 </div>
+                <input type="hidden" asp-for="RecaptchaToken" id="recaptchaToken" />
             }
-            
 
             <div class="form-group mb-4">
                 <button type="submit" class="btn btn-primary btn-block">Iniciar Sesión</button>
             </div>
         </form>
         <hr />
-        <div class="text-center">  
-                @if (!ViewData.ModelState.IsValid)
-                {
-                    <div class="text-danger">
-                        @Html.ValidationSummary(true)
-                    </div>
-                }  
+        <div class="text-center">
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="text-danger">
+                    @Html.ValidationSummary(true)
+                </div>
+            }
         </div>
     </div>
 </div>
 
+<script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
 
 
-
-
-
-
-
-
-
-
+<script>
+    function onCaptchaSuccess(token) {
+        // Asigna el token al campo oculto
+        console.log(token);
+        document.getElementById("recaptchaToken").value = token;
+    }
+</script>
