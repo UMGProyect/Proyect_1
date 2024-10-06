@@ -74,3 +74,90 @@ body {
     color: #00ff00; /* Verde fosforescente */
     text-shadow: 0 0 5px #000000, 0 0 10px #000000, 0 0 15px #000000; /* Efecto de brillo negro */
 }
+
+/*Desde aquí modifiqué param css */
+
+body {
+    background-color: #f2f2f2; /* Color claro para el fondo general */
+}
+
+.card {
+    background-color: #0066cc; /* Color de fondo de la tarjeta */
+    color: white; /* Color del texto en la tarjeta */
+}
+
+    .card h2 {
+        color: #ffffff; /* Color del título */
+    }
+
+.btn-primary {
+    background-color: #ffcc00; /* Color del botón */
+    border-color: #ffcc00; /* Color del borde del botón */
+}
+
+    .btn-primary:hover {
+        background-color: #e6b800; /* Color del botón al pasar el mouse */
+    }
+
+.form-control {
+    background-color: #ffffff; /* Color de fondo de los campos de entrada */
+    color: #333333; /* Color del texto en los campos de entrada */
+}
+
+.text-danger {
+    color: #ffcccc; /* Color de texto de error más claro */
+    font-weight: bold; /* Hacer el texto en negrita */
+    padding: 5px; /* Espaciado alrededor del texto */
+    font-size: 1.2em; /* Tamaño de letra más grande */
+}
+
+/*para el logoUMG
+.logo-container {
+    display: flex;
+    justify-content: center;
+}
+
+.rounded-logo {
+    max-width: 150px; /* Ajusta el tamaño según sea necesario 
+    height: auto;
+    border-radius: 50%; /* Hace que la imagen sea redonda 
+    border: 2px solid #ffffff; /* Borde blanco (opcional) 
+}*/
+
+.logo {
+    position: absolute;
+    top: 60px; /* Ajusta este valor según sea necesario */
+    left: 50%; /* Centra horizontalmente */
+    transform: translateX(-50%); /* Ajuste para centrar correctamente */
+    width: 120px; /* Ajusta el tamaño del logo según sea necesario */
+    height: 125px; /* Mantiene la relación de aspecto del logo */
+    margin-bottom: 30px; /* Espaciado debajo del logo */
+    border-radius: 100%; /* Hace la imagen circular si el ancho y la altura son iguales */
+    z-index: 10; /* Asegura que el logo esté en una capa superior */
+}
+
+/*Menu princial */
+.navbar {
+    background-color: #007bff; /* Color de fondo de la barra de navegación */
+    padding: 10px; /* Espaciado interno */
+}
+
+.navbar-nav {
+    list-style-type: none; /* Quita los puntos de la lista */
+    padding: 0; /* Quita el padding */
+    margin: 0; /* Quita el margen */
+    display: flex; /* Muestra los elementos en una línea */
+}
+
+.nav-item {
+    margin-right: 20px; /* Espaciado entre los elementos */
+}
+
+.nav-link {
+    color: white; /* Color del texto */
+    text-decoration: none; /* Sin subrayado */
+}
+
+    .nav-link:hover {
+        text-decoration: underline; /* Subrayado al pasar el mouse */
+    }

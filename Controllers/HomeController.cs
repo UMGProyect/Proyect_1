@@ -39,13 +39,18 @@ namespace Proyect_1.Controllers
             return View();
         }
 
+        public IActionResult MenuPrincipal()
+        {
+            return View();
+        }
+
         public IActionResult Main(User model)
         {
-            model.Name = HttpContext.Session.GetString("UserName");
-            if (HttpContext.Session.GetString("IsAuthenticated") != "true")
-            {
-                return RedirectToAction("Login");
-            }
+            //model.Name = HttpContext.Session.GetString("UserName");
+          //  if (HttpContext.Session.GetString("IsAuthenticated") != "true")
+          //  {
+           //     return RedirectToAction("Login");
+           // }
 
             return View(model);
         }
