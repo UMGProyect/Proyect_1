@@ -10,7 +10,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Net.Http;
-
+using System.Collections.Generic;
+using System.Threading.Tasks;
 namespace Proyect_1.Controllers
 {
     public class HomeController : Controller
