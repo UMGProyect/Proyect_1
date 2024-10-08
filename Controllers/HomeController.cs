@@ -195,5 +195,13 @@ namespace Proyect_1.Controllers
             return RedirectToAction("Login");
 
         }
-    }
+
+        //NUEVA ACCION PARA LA VISTA DE REPORTES
+        public IActionResult Reportes()
+        {
+
+            return View();
+        }
+
+      }
 }
