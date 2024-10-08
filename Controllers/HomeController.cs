@@ -1,12 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Proyect_1.ContextBD;
 using Proyect_1.Models;
+using Proyect_1.Services;
 using System.Diagnostics;
+using System.Drawing.Imaging;
+using System.Drawing;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.Net.Http;
 
 namespace Proyect_1.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly HttpClient _httpClient;
+        private readonly string _secretKey;
+
+
         private readonly ILogger<HomeController> _logger;
         //Instancia de sesión.
         private readonly Sesion iniciar_sesion = new();
@@ -29,43 +41,104 @@ namespace Proyect_1.Controllers
 
         public IActionResult Login()
         {
+            
+            return View();
+        }
+
+        public IActionResult MenuPrincipal()
+        {
             return View();
         }
 
         public IActionResult Main(User model)
         {
             model.Name = HttpContext.Session.GetString("UserName");
-            if (HttpContext.Session.GetString("IsAuthenticated") != "true")
-            {
-                return RedirectToAction("Login");
-            }
+          if (HttpContext.Session.GetString("IsAuthenticated") != "true")
+          {
+               return RedirectToAction("Login");
+           }
 
             return View(model);
         }
         //Manejo de solicitud POST.
         [HttpPost]
-        public IActionResult Login(User model)
+        public async Task<IActionResult> Login(User model)
         {
-            if (ModelState.IsValid)
-            {
-                //SentrySdk.CaptureMessage("Hello Sentry");
-                bool User_Authenticator = iniciar_sesion.Authenticator(model);
+            int loginAttempts = HttpContext.Session.GetInt32("LoginAttempts") ?? 0;
 
-                if (User_Authenticator && model.Name != null)
+            // Si el reCAPTCHA está activo, valida el token
+            if (loginAttempts >= 5)
+            {
+                string token = model.RecaptchaToken; // model.RecaptchaToken
+                var recaptchaResponse = await ValidateRecaptcha(token);
+                if (!recaptchaResponse)
                 {
-                    // Se encontro el usuario.
-                    HttpContext.Session.SetString("UserName", model.Name);
-                    HttpContext.Session.SetString("IsAuthenticated", "true");
-                    return RedirectToAction("Main");
+                    ModelState.AddModelError("", "Verificación de reCAPTCHA fallida. Inténtalo de nuevo.");
+                    return View(model);
                 }
-                else
-                {
-                    // Usuario no existe.
-                    ModelState.AddModelError("", "Nombre de usuario o contraseña incorrectos.");
-                }
+                HttpContext.Session.Remove("LoginAttempts");
             }
-            return View(model);
+            loginAttempts++;
+            HttpContext.Session.SetInt32("LoginAttempts", loginAttempts);
+
+
+            // Validaciones de entradas
+            if (string.IsNullOrWhiteSpace(model.Name) || string.IsNullOrWhiteSpace(model.Password))
+            {
+                ModelState.AddModelError("", "El nombre de usuario y la contraseña no pueden estar vacíos.");
+                return View(model);
+            }
+
+            if (model.Name.Contains(" ") || model.Password.Contains(" "))
+            {
+                ModelState.AddModelError("", "El nombre de usuario y la contraseña no deben contener espacios.");
+                return View(model);
+            }
+
+            if (model.Name.Length < 3 || model.Name.Length > 10)
+            {
+                ModelState.AddModelError("", "El nombre de usuario debe tener entre 3 y 10 caracteres.");
+                return View(model);
+            }
+
+            if (model.Password.Length < 5 || model.Password.Length > 15)
+            {
+                ModelState.AddModelError("", "La contraseña debe tener entre 5 y 15 caracteres.");
+                return View(model);
+            }
+
+            bool User_Authenticator;
+            try
+            {
+                User_Authenticator = iniciar_sesion.Authenticator(model, "0");
+            }
+            catch (Exception ex)
+            {
+                HttpContext.Session.SetString("ErrorId", ex.Message);
+
+                var errorReport = new ErrorReport
+                {
+                    ErrorDetectado = "¡Se encontró un error!"
+                };
+                return View("UserReportsBugs", errorReport);
+            }
+
+            if (User_Authenticator && model.Name != null)
+            {
+                // Autenticación exitosa
+                HttpContext.Session.SetString("UserName", model.Name);
+                HttpContext.Session.SetString("IsAuthenticated", "true");
+                HttpContext.Session.Remove("LoginAttempts"); // Restablecer el contador de intentos
+                return RedirectToAction("Main");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Nombre de usuario o contraseña incorrectos.");
+                return View(model);
+            }
         }
+
+
 
         public IActionResult Logout()
         {
@@ -73,8 +146,32 @@ namespace Proyect_1.Controllers
             return RedirectToAction("Login"); // Redirigimos a la pagina de inicio se sesion.
         }
 
+        // Manejo de seguridad
 
+        public async Task<bool> ValidateRecaptcha(string token)
+        {
+            // Crear el contenido de la solicitud
+            var postData = new FormUrlEncodedContent(new[]
+            {
+            new KeyValuePair<string, string>("secret", "6Lepo1gqAAAAAJqO1RhlNUP5wE5cN0ZV3CAbNeOU"),
+            new KeyValuePair<string, string>("response", token)
+        });
 
+            // Enviar la solicitud POST
+           // var response = await _httpClient.PostAsync("https://recaptchaenterprise.googleapis.com/v1/projects/umgproyect-1726805979105/assessments?key=API_KEY", postData);
+
+            if(token!=null)
+            {
+                return true;
+            }
+
+            return false; // En caso de error, retorna false
+        }
+        //Manejo de reportes - Sentry
+        public IActionResult SystemReport()
+        {
+            return View();
+        }
 
 
         public IActionResult UserReportsBugs()
@@ -85,17 +182,18 @@ namespace Proyect_1.Controllers
         [HttpPost]
         public IActionResult ReportError(ErrorReport model)
         {
-            if (ModelState.IsValid)
-            {
-                // Captura el mensaje del usuario en Sentry
-                SentrySdk.CaptureMessage($"Error reportado por el usuario: {model.Description}");
 
-                // Redirige o muestra un mensaje de confirmación
-                return RedirectToAction("Login");
-            }
+            // Obtener el mismo identificador único almacenado previamente
+            string errorId = HttpContext.Session.GetString("ErrorId");
 
-            // Si el modelo no es valido, vuelve a mostrar el formulario
-            return View("UserReportsBugs", model);
+            // Configurar el scope para agregar el ErrorId
+
+            // Capturar el mensaje asociado al reporte de error
+            SentrySdk.CaptureMessage($"Error reportado por el usuario: {model.Description}  Horror encontrado: {errorId}");
+
+            // Redirigir o mostrar un mensaje de confirmación
+            return RedirectToAction("Login");
+
         }
     }
 }

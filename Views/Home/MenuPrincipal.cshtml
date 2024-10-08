@@ -1,0 +1,91 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+}
+
+<!--if (User.Identity.IsAuthenticated){ -->
+
+    <!--Barra superior con buscador y opción de subir historias -->
+
+    <div class="container-fluid bg-light p-3">
+        <div class="row align-items-center">
+<div class="col-md-3">
+    <!-- Imagen para subir historias(puedes integrar funcionalidad de backend) -->
+
+    <img src = "/images/upload-story.png" class="rounded-circle" width="50" height="50" alt="Subir historia">
+    <span>Subir Historia</span>
+</div>
+<div class="col-md-6">
+    <!-- Barra de búsqueda -->
+    <input type = "text" class="form-control" placeholder="Buscar amigos o publicaciones...">
+</div>
+<div class="col-md-3 text-right">
+    <!-- Foto de perfil con opción de abrir perfil -->
+    <img src = "/images/perfil.png" class="rounded-circle" width="50" height="50" alt="Foto de perfil">
+    <span>Mi Perfil</span>
+</div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="row">
+<!-- Columna de Menú Izquierda -->
+<div class="col-md-3">
+    <h5>Menú</h5>
+    <ul class="list-group">
+        <li class="list-group-item">
+            <a class="nav-link" href="/Perfil">Mi Perfil</a>
+        </li>
+        <li class="list-group-item">
+            <a class="nav-link" href="/Amigos">Amigos</a>
+        </li>
+        <li class="list-group-item">
+            <a class="nav-link" href="/Videos">Videos</a>
+        </li>
+        <li class="list-group-item">
+            <a class="nav-link" href="/Logout">Cerrar Sesión</a>
+        </li>
+    </ul>
+</div>
+
+<!-- Columna de Publicaciones en el Centro -->
+<div class="col-md-6">
+    <h5>¿Qué estás pensando?</h5>
+
+    <!-- Formulario para crear una nueva publicación -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <textarea id = "newPostContent" class="form-control" rows="3" placeholder="Escribe algo..."></textarea>
+            <button id = "postButton" class="btn btn-primary mt-2">Publicar</button>
+        </div>
+    </div>
+
+    <!-- Sección donde se mostrarán las publicaciones -->
+    <div id = "postsContainer" >
+        <!--Publicaciones se cargarán aquí dinámicamente -->
+    </div>
+
+
+            </div>
+
+            <!-- Columna Derecha para Contenido Adicional o Amigos -->
+            <div class="col-md-3">
+                <h5>Amigos Sugeridos</h5>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <strong>Amigo 1</strong> <button class="btn btn-sm btn-primary float-right">Añadir</button>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Amigo 2</strong> <button class="btn btn-sm btn-primary float-right">Añadir</button>
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Amigo 3</strong> <button class="btn btn-sm btn-primary float-right">Añadir</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!--else
+    {
+      
+    } -->
