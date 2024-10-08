@@ -1,3 +1,4 @@
+using Proyect_1.Services;
 using Sentry.Profiling;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +15,7 @@ builder.WebHost.UseSentry(o =>
     ));
 });
 
-// Configuración de servicios
+// Configuración de serviciosj
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession(options =>
 {
@@ -47,3 +48,11 @@ app.MapControllerRoute(
 
 app.Run();
 
+//definicion del metodo configureServices
+void configureServices(IServiceCollection services)
+
+{
+    services.AddControllersWithViews();
+    services.AddSingleton<ReportService>(); //registrar el servicio reportservice como singleton
+
+}
