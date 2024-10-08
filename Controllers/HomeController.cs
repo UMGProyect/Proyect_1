@@ -37,6 +37,17 @@ namespace Proyect_1.Controllers
 
         }
 
+        // Aquí agregamos el nuevo método ConsultarDatos
+        [HttpGet]
+        public async Task<IActionResult> ConsultarDatos()
+        {
+            // Llamar al servicio para obtener los datos simulados
+            var datos = await _reportService.ConsultarDatos();
+
+            // Retornar los datos en formato JSON
+            return Json(datos);
+        }
+
         public IActionResult CheckSession()
         {
             if (HttpContext.Session.GetString("IsAuthenticated") == "true")

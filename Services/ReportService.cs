@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using Proyect_1.Models;
 namespace Proyect_1.Services
 {
     // Definición del servicio
