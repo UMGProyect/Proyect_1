@@ -17,15 +17,21 @@ namespace Proyect_1.Controllers
     {
         private readonly HttpClient _httpClient;
         private readonly string _secretKey; //permitir null para _secretKey
-
+       
 
 
         private readonly ILogger<HomeController> _logger;
         //Instancia de sesión.
         private readonly Sesion iniciar_sesion = new();
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ReportService _reportService;
+
+        // constructor con inyeccion del servicio
+        public HomeController(ILogger<HomeController> logger, ReportService reportService)
+
         {
+ 
             _logger = logger;
+            _reportService = reportService;
             _httpClient = new HttpClient(); //Inicializa HttpCliente
             _secretKey = "mi_secreto"; //proporciona un valor para la clave secreta
 
