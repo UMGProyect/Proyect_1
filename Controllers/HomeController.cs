@@ -199,8 +199,18 @@ namespace Proyect_1.Controllers
         //NUEVA ACCION PARA LA VISTA DE REPORTES
         public IActionResult Reportes()
         {
+            //simulacion de datos. En una aplicacion real, estos datos se obtendrian de la BD 
+            List<Reporte> listaReportes = new List<Reporte>
+            {
+                new Reporte{ Id = 1, Nombre = "Reporte de ventas", Descripcion = "Informe de ventas mensuales", Fecha = DateTime.Now },
+                new Reporte { Id = 2, Nombre = "Reporte de Inventario", Descripcion = "Reporte de inventario actualizado", Fecha = DateTime.Now.AddDays(-7) },
+                new Reporte { Id = 3, Nombre = "Reporte de Compras", Descripcion = "Informe de compras de proveedores", Fecha = DateTime.Now.AddDays(-30) }
 
-            return View();
+                };
+                
+            //pasar la lista de reportes como modelo a la vista.
+                return View(listaReportes);
+
         }
 
       }

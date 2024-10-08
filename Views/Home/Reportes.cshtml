@@ -1,14 +1,18 @@
-﻿@{
+﻿@model IEnumerable<Proyect_1.Models.Reporte> <!-- Modelo que recibe la vista -->
+@{
     ViewData["Title"] = "Reportes";
 }
 
-<h2>Reportes</h2>
-<p>Esta es la vista de reportes.</p>
+<div class="container mt-5">
+    <h2>Reportes</h2>
+    <p>Esta es la vista de reportes.</p>
 
-<!-- Usar Bootstrap para una tabla de reportes -->
-<div class="container">
+    <!-- Botón para agregar un nuevo reporte -->
+    <a href="#" class="btn btn-primary mb-3">Levantar Reporte</a>
+
+    <!-- Tabla de reportes usando Bootstrap -->
     <table class="table table-striped">
-        <thead>
+        <thead class="thead-dark">
             <tr>
                 <th>#</th>
                 <th>Nombre</th>
@@ -17,13 +21,24 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>1</td>
-                <td>Reporte de Ventas</td>
-                <td>Informe de ventas mensuales</td>
-                <td>2024-10-08</td>
-            </tr>
-            <!-- Agregar más filas aquí según se necesiten -->
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var reporte in Model)
+                {
+                    <tr>
+                        <td>@reporte.Id</td>
+                        <td>@reporte.Nombre</td>
+                        <td>@reporte.Descripcion</td>
+                        <td>@reporte.Fecha.ToString("yyyy-MM-dd")</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" class="text-center">No hay reportes disponibles.</td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>
