@@ -16,7 +16,8 @@ namespace Proyect_1.Controllers
     public class HomeController : Controller
     {
         private readonly HttpClient _httpClient;
-        private readonly string _secretKey;
+        private readonly string _secretKey; //permitir null para _secretKey
+
 
 
         private readonly ILogger<HomeController> _logger;
@@ -25,6 +26,9 @@ namespace Proyect_1.Controllers
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
+            _httpClient = new HttpClient(); //Inicializa HttpCliente
+            _secretKey = "mi_secreto"; //proporciona un valor para la clave secreta
+
         }
 
         public IActionResult CheckSession()
