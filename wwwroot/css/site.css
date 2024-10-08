@@ -75,7 +75,7 @@ body {
     text-shadow: 0 0 5px #000000, 0 0 10px #000000, 0 0 15px #000000; /* Efecto de brillo negro */
 }
 
-/*Desde aquí modifiqué param css */
+/*Desde aquí modifiqué param css Darlin*/
 
 body {
     background-color: #f2f2f2; /* Color claro para el fondo general */
@@ -161,3 +161,40 @@ body {
     .nav-link:hover {
         text-decoration: underline; /* Subrayado al pasar el mouse */
     }
+
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+textarea {
+    resize: none;
+}
+
+#newPostContent {
+    font-size: 1rem;
+}
+
+#postButton {
+    float: right;
+}
+
+.card-footer a {
+    color: white;
+}
+
+.card-footer a:hover {
+    color: purple;
+}
+
+.list-group-item a{
+    color: blue;
+}
+
+.list-group-item a:hover {
+    color: purple !important; 
+}
+
+.card .card-body {
+    background-color: white;
+    color: black;
+}
