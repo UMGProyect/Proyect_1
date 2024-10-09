@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Proyect_1.Models.Reporte> //Modelo que recibe la vista -->
+﻿@model IEnumerable<Proyect_1.Models.Reporte> //Modelo que recibe la vista
+
 @{
     ViewData["Title"] = "Reportes";
 }
@@ -10,7 +11,7 @@
     <!-- Botón para agregar un nuevo reporte -->
     <a href="#" class="btn btn-primary mb-3">Levantar Reporte</a>
 
-    <!-- Tabla de reportes usando Bootstrap -->
+    <!-- Primera Tabla de reportes usando Bootstrap -->
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
@@ -41,4 +42,46 @@
             }
         </tbody>
     </table>
+
+    <!-- Inicio: Tabla adicional con AJAX para reportes -->
+    <h2>Reportes Adicionales</h2>
+    <table id="tablaReportes" class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Roles</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <!-- Inclusión de jQuery y script AJAX -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Llamada AJAX al método ConsultarDatos en el HomeController
+            $.ajax({
+                url: '@Url.Action("ConsultarDatos", "Home")',
+                type: 'GET',
+                success: function (data) {
+                    // Iterar sobre los datos y agregarlos a la tabla
+                    data.forEach(function (item) {
+                        $('#tablaReportes tbody').append(
+                            `<tr>
+                                        <td>${item.id}</td>
+                                        <td>${item.nombre}</td>
+                                        <td>${item.roles}</td>
+                                    </tr>`
+                        );
+                    });
+                },
+                error: function () {
+                    alert("Error al cargar los datos de reportes adicionales");
+                }
+            });
+        });
+    </script>
+    <!-- Fin: Tabla adicional con AJAX para reportes -->
 </div>
