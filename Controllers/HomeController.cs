@@ -12,7 +12,6 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
 namespace Proyect_1.Controllers
 {
     public class HomeController : Controller
@@ -222,13 +221,14 @@ namespace Proyect_1.Controllers
         //NUEVA ACCION PARA LA VISTA DE REPORTES
         public IActionResult Reportes()
         {
-            //simulacion de datos. En una aplicacion real, estos datos se obtendrian de la BD 
+            //simulacion de datos relevantes para una red social. En una aplicacion real, estos datos se obtendrian de la BD 
             List<Reporte> listaReportes = new List<Reporte>
             {
-                new Reporte{ Id = 1, Nombre = "Reporte de ventas", Descripcion = "Informe de ventas mensuales", Fecha = DateTime.Now },
-                new Reporte { Id = 2, Nombre = "Reporte de Inventario", Descripcion = "Reporte de inventario actualizado", Fecha = DateTime.Now.AddDays(-7) },
-                new Reporte { Id = 3, Nombre = "Reporte de Compras", Descripcion = "Informe de compras de proveedores", Fecha = DateTime.Now.AddDays(-30) }
-
+                new Reporte { Id = 1, Nombre = "Reporte de Actividad de Usuarios ", Descripcion = "Informe detallado sobre la actividad de los usuarios", Fecha = DateTime.Now },
+                new Reporte { Id = 2, Nombre = "Reporte de Contenido Moderado", Descripcion = "Resumen de contenido que ha sido revisado y moderado por el equipo de administracion", Fecha = DateTime.Now.AddDays(-7) },
+                new Reporte { Id = 3, Nombre = "Reporte de Engagement", Descripcion = "Analisis de la interaccion de los usuarios con las publicaciones y funcionalidades de la red social ", Fecha = DateTime.Now.AddDays(-30) },
+                new Reporte { Id = 4, Nombre = "Reporte de Nuevos Usuarios", Descripcion = "Cantidad de nuevos usuarios registrados en la plataforma", Fecha = DateTime.Now.AddDays(-15)},
+                new Reporte { Id = 5, Nombre = "Reporte de contenido Popular", Descripcion = "Lista de las Publicaciones mas populares segun numero de 'me gusta', comentarios y compartidos.", Fecha = DateTime.Now },
                 };
                 
             //pasar la lista de reportes como modelo a la vista.
@@ -237,4 +237,15 @@ namespace Proyect_1.Controllers
         }
 
       }
+}
+public class Reporte
+{
+    public int Id { get; set; }
+    public string Nombre { get; set; }
+    public string Descripcion { get; set; }
+    public DateTime Fecha { get; set; }
+    public string Tipo { get; set; } // Ejemplo: "Actividad", "Moderación", "Engagement"
+    public string Autor { get; set; } // Quién generó el reporte
+    public string Estado { get; set; } // Ejemplo: "Pendiente", "Completado"
+    public string Detalles { get; set; } // Información adicional o enlaces a datos específicos
 }
