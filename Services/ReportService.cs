@@ -17,7 +17,8 @@ namespace Proyect_1.Services
             {
                 new { ID = "1", Nombre = "Pablo", Roles = "Administrador" },
                 new { ID = "2", Nombre = "Dayana", Roles = "Usuario" },
-                new { ID = "3", Nombre = "Gaby", Roles = "Moderador" }
+                new { ID = "3", Nombre = "Gaby", Roles = "Moderador" },
+                new { ID = "4", Nombre = "Mario", Roles = "Analista de pruebas"},
             };
 
             return datos; // Retornar los datos simulados
