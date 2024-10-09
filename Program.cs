@@ -24,7 +24,8 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-
+//Registrar el ReportService
+builder.Services.AddSingleton<ReportService>();//Registrar el servicio correctamente
 
 var app = builder.Build();
 
@@ -48,11 +49,4 @@ app.MapControllerRoute(
 
 app.Run();
 
-//definicion del metodo configureServices
-void configureServices(IServiceCollection services)
 
-{
-    services.AddControllersWithViews();
-    services.AddSingleton<ReportService>(); //registrar el servicio reportservice como singleton
-
-}
