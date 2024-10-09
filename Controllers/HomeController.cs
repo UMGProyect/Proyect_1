@@ -18,7 +18,7 @@ namespace Proyect_1.Controllers
     {
         private readonly HttpClient _httpClient;
         private readonly string _secretKey; //permitir null para _secretKey
-       
+
 
 
         private readonly ILogger<HomeController> _logger;
@@ -30,7 +30,7 @@ namespace Proyect_1.Controllers
         public HomeController(ILogger<HomeController> logger, ReportService reportService)
 
         {
- 
+
             _logger = logger;
             _reportService = reportService;
             _httpClient = new HttpClient(); //Inicializa HttpCliente
@@ -63,7 +63,7 @@ namespace Proyect_1.Controllers
 
         public IActionResult Login()
         {
-            
+
             return View();
         }
 
@@ -75,10 +75,10 @@ namespace Proyect_1.Controllers
         public IActionResult Main(User model)
         {
             model.Name = HttpContext.Session.GetString("UserName");
-          if (HttpContext.Session.GetString("IsAuthenticated") != "true")
-          {
-               return RedirectToAction("Login");
-           }
+            if (HttpContext.Session.GetString("IsAuthenticated") != "true")
+            {
+                return RedirectToAction("Login");
+            }
 
             return View(model);
         }
@@ -180,9 +180,9 @@ namespace Proyect_1.Controllers
         });
 
             // Enviar la solicitud POST
-           // var response = await _httpClient.PostAsync("https://recaptchaenterprise.googleapis.com/v1/projects/umgproyect-1726805979105/assessments?key=API_KEY", postData);
+            // var response = await _httpClient.PostAsync("https://recaptchaenterprise.googleapis.com/v1/projects/umgproyect-1726805979105/assessments?key=API_KEY", postData);
 
-            if(token!=null)
+            if (token != null)
             {
                 return true;
             }
@@ -230,22 +230,11 @@ namespace Proyect_1.Controllers
                 new Reporte { Id = 4, Nombre = "Reporte de Nuevos Usuarios", Descripcion = "Cantidad de nuevos usuarios registrados en la plataforma", Fecha = DateTime.Now.AddDays(-15)},
                 new Reporte { Id = 5, Nombre = "Reporte de contenido Popular", Descripcion = "Lista de las Publicaciones mas populares segun numero de 'me gusta', comentarios y compartidos.", Fecha = DateTime.Now },
                 };
-                
+
             //pasar la lista de reportes como modelo a la vista.
-                return View(listaReportes);
+            return View(listaReportes);
 
         }
 
-      }
-}
-public class Reporte
-{
-    public int Id { get; set; }
-    public string Nombre { get; set; }
-    public string Descripcion { get; set; }
-    public DateTime Fecha { get; set; }
-    public string Tipo { get; set; } // Ejemplo: "Actividad", "Moderación", "Engagement"
-    public string Autor { get; set; } // Quién generó el reporte
-    public string Estado { get; set; } // Ejemplo: "Pendiente", "Completado"
-    public string Detalles { get; set; } // Información adicional o enlaces a datos específicos
+    }
 }
