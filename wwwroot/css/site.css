@@ -161,3 +161,37 @@ body {
     .nav-link:hover {
         text-decoration: underline; /* Subrayado al pasar el mouse */
     }
+
+
+
+    /*  PERFIL FREDY*/
+
+    .banner {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid white;
+            margin-top: -75px;
+        }
+        .post-image {
+            max-width: 100%;
+            height: auto;
+        }
+        .reaction-btn {
+            cursor: pointer;
+            user-select: none;
+        }
+        .comment-box {
+            resize: none;
+        }
+        .card-body {
+            color: black;
+        }
+        .card-body .text-muted {
+            color: #6c757d !important;
+        }
