@@ -1,0 +1,71 @@
+﻿@model Proyect_1.Models.UserProfileViewModel
+@{
+    ViewData["Title"] = "Perfil";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@Model.UserName - Perfil</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container-fluid p-0">
+        <div class="banner" style="background-image: url('@Model.BannerImageUrl');"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 text-center">
+                    <img src="@Model.ProfilePictureUrl" alt="@Model.UserName" class="profile-picture">
+                    <h2 class="mt-3">@Model.UserName</h2>
+                    <p>@Model.Bio</p>
+                </div>
+                <div class="col-md-9">
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <h3>Publicaciones</h3>
+                            @foreach (var post in Model.Posts)
+                            {
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@post.Title</h5>
+                                        <p class="card-text">@post.Content</p>
+                                        @if (!string.IsNullOrEmpty(post.ImageUrl))
+                                        {
+                                            <img src="@post.ImageUrl" alt="Imagen de la publicación" class="post-image mb-3">
+                                        }
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">Publicado el @post.CreatedAt.ToString("dd/MM/yyyy")</small>
+                                            <div>
+                                                <span class="reaction-btn mr-3"><i class="far fa-thumbs-up"></i> Me gusta (@post.Likes)</span>
+                                                <span class="reaction-btn"><i class="far fa-comment"></i> Comentarios (@post.Comments.Count)</span>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <h6>Comentarios:</h6>
+                                        @foreach (var comment in post.Comments)
+                                        {
+                                            <div class="mb-2">
+                                                <strong>@comment.UserName</strong>: @comment.Content
+                                            </div>
+                                        }
+                                        <div class="mt-3">
+                                            <textarea class="form-control comment-box" rows="2" placeholder="Escribe un comentario..."></textarea>
+                                            <button class="btn btn-primary btn-sm mt-2">Comentar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

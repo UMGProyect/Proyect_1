@@ -1,4 +1,3 @@
-using Proyect_1.Services;
 using Sentry.Profiling;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +14,7 @@ builder.WebHost.UseSentry(o =>
     ));
 });
 
-// Configuración de serviciosj
+// Configuración de servicios
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession(options =>
 {
@@ -24,8 +23,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-//Registrar el ReportService
-builder.Services.AddSingleton<ReportService>();//Registrar el servicio correctamente
+
 
 var app = builder.Build();
 
@@ -45,8 +43,7 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Reportes}/{id?}");
+    pattern: "{controller=Home}/{action=Perfil}/{id?}");
 
 app.Run();
-
 
