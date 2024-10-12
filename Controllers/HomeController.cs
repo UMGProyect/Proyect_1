@@ -18,7 +18,7 @@ namespace Proyect_1.Controllers
     {
         private readonly HttpClient _httpClient;
         private readonly string _secretKey; //permitir null para _secretKey
-
+        private readonly BlobService _blobService;
 
 
         private readonly ILogger<HomeController> _logger;
@@ -27,7 +27,7 @@ namespace Proyect_1.Controllers
         private readonly ReportService _reportService;
 
         // constructor con inyeccion del servicio
-        public HomeController(ILogger<HomeController> logger, ReportService reportService)
+        public HomeController(ILogger<HomeController> logger, ReportService reportService, BlobService blobService)
 
         {
 
@@ -35,8 +35,43 @@ namespace Proyect_1.Controllers
             _reportService = reportService;
             _httpClient = new HttpClient(); //Inicializa HttpCliente
             _secretKey = "mi_secreto"; //proporciona un valor para la clave secreta
+            _blobService = blobService;
 
         }
+
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+       
+        //Metodo para subir una imagen al servidor de archivos.
+
+
+        [HttpPost]
+        public async Task<IActionResult> Index(IFormFile file)
+        {
+            if (file != null && file.Length > 0)
+            {
+                string url = await _blobService.UploadFileAsync(file);
+
+                // Verifica si la URL es null
+                if (url == null)
+                {
+                    ModelState.AddModelError("file", "Error al cargar el archivo.");
+                    return View(); // Retorna la vista con error
+                }
+
+                ViewBag.ImageUrl = url; // Asigna la URL a ViewBag
+            }
+            else
+            {
+                ModelState.AddModelError("file", "Por favor selecciona un archivo.");
+            }
+
+            return View(); // Retorna la vista
+        }
+
 
         // Aquí agregamos el nuevo método ConsultarDatos
         [HttpGet]
@@ -44,7 +79,6 @@ namespace Proyect_1.Controllers
         {
             // Llamar al servicio para obtener los datos simulados
             var datos = await _reportService.ConsultarDatos();
-
             // Retornar los datos en formato JSON
             return Json(datos);
         }
@@ -61,10 +95,33 @@ namespace Proyect_1.Controllers
             }
         }
 
+
         public IActionResult Login()
         {
 
             return View();
+        }
+
+        //Registro
+        public IActionResult Registrar()
+        {
+
+            return View();
+        }
+
+        public IActionResult Registro(User model)
+        {
+                bool success = iniciar_sesion.RegisterUser(model);
+                if (success)
+                {
+                    return RedirectToAction("Login");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "El nombre de usuario ya existe.");
+                }
+            
+            return View(model);
         }
 
 

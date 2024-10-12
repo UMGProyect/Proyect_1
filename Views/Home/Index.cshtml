@@ -1,0 +1,9 @@
+﻿<form asp-action="Index" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" />
+    <button type="submit">Subir</button>
+</form>
+
+@if (ViewBag.ImageUrl != null)
+{
+    <p>Archivo subido: <a href="@ViewBag.ImageUrl">@ViewBag.ImageUrl</a></p>
+}
