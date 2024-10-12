@@ -10,21 +10,43 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Net.Http;
-
+using System.Collections.Generic;
+using System.Threading.Tasks;
 namespace Proyect_1.Controllers
 {
     public class HomeController : Controller
     {
         private readonly HttpClient _httpClient;
-        private readonly string _secretKey;
+        private readonly string _secretKey; //permitir null para _secretKey
+
 
 
         private readonly ILogger<HomeController> _logger;
         //Instancia de sesión.
         private readonly Sesion iniciar_sesion = new();
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ReportService _reportService;
+
+        // constructor con inyeccion del servicio
+        public HomeController(ILogger<HomeController> logger, ReportService reportService)
+
         {
+
             _logger = logger;
+            _reportService = reportService;
+            _httpClient = new HttpClient(); //Inicializa HttpCliente
+            _secretKey = "mi_secreto"; //proporciona un valor para la clave secreta
+
+        }
+
+        // Aquí agregamos el nuevo método ConsultarDatos
+        [HttpGet]
+        public async Task<IActionResult> ConsultarDatos()
+        {
+            // Llamar al servicio para obtener los datos simulados
+            var datos = await _reportService.ConsultarDatos();
+
+            // Retornar los datos en formato JSON
+            return Json(datos);
         }
 
         public IActionResult CheckSession()
@@ -41,7 +63,7 @@ namespace Proyect_1.Controllers
 
         public IActionResult Login()
         {
-            
+
             return View();
         }
 
@@ -53,10 +75,10 @@ namespace Proyect_1.Controllers
         public IActionResult Main(User model)
         {
             model.Name = HttpContext.Session.GetString("UserName");
-          if (HttpContext.Session.GetString("IsAuthenticated") != "true")
-          {
-               return RedirectToAction("Login");
-           }
+            if (HttpContext.Session.GetString("IsAuthenticated") != "true")
+            {
+                return RedirectToAction("Login");
+            }
 
             return View(model);
         }
@@ -158,9 +180,9 @@ namespace Proyect_1.Controllers
         });
 
             // Enviar la solicitud POST
-           // var response = await _httpClient.PostAsync("https://recaptchaenterprise.googleapis.com/v1/projects/umgproyect-1726805979105/assessments?key=API_KEY", postData);
+            // var response = await _httpClient.PostAsync("https://recaptchaenterprise.googleapis.com/v1/projects/umgproyect-1726805979105/assessments?key=API_KEY", postData);
 
-            if(token!=null)
+            if (token != null)
             {
                 return true;
             }
@@ -195,5 +217,24 @@ namespace Proyect_1.Controllers
             return RedirectToAction("Login");
 
         }
+
+        //NUEVA ACCION PARA LA VISTA DE REPORTES
+        public IActionResult Reportes()
+        {
+            //simulacion de datos relevantes para una red social. En una aplicacion real, estos datos se obtendrian de la BD 
+            List<Reporte> listaReportes = new List<Reporte>
+            {
+                new Reporte { Id = 1, Nombre = "Reporte de Actividad de Usuarios ", Descripcion = "Informe detallado sobre la actividad de los usuarios", Fecha = DateTime.Now },
+                new Reporte { Id = 2, Nombre = "Reporte de Contenido Moderado", Descripcion = "Resumen de contenido que ha sido revisado y moderado por el equipo de administracion", Fecha = DateTime.Now.AddDays(-7) },
+                new Reporte { Id = 3, Nombre = "Reporte de Engagement", Descripcion = "Analisis de la interaccion de los usuarios con las publicaciones y funcionalidades de la red social ", Fecha = DateTime.Now.AddDays(-30) },
+                new Reporte { Id = 4, Nombre = "Reporte de Nuevos Usuarios", Descripcion = "Cantidad de nuevos usuarios registrados en la plataforma", Fecha = DateTime.Now.AddDays(-15)},
+                new Reporte { Id = 5, Nombre = "Reporte de contenido Popular", Descripcion = "Lista de las Publicaciones mas populares segun numero de 'me gusta', comentarios y compartidos.", Fecha = DateTime.Now },
+                };
+
+            //pasar la lista de reportes como modelo a la vista.
+            return View(listaReportes);
+
+        }
+
     }
 }

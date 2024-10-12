@@ -1,0 +1,87 @@
+﻿@model IEnumerable<Proyect_1.Models.Reporte> //Modelo que recibe la vista
+
+@{
+    ViewData["Title"] = "Reportes";
+}
+
+<div class="container mt-5">
+    <h2>Reportes</h2>
+    <p>Esta es la vista de reportes.</p>
+
+    <!-- Botón para agregar un nuevo reporte -->
+    <a href="#" class="btn btn-primary mb-3">Levantar Reporte</a>
+
+    <!-- Primera Tabla de reportes usando Bootstrap -->
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var reporte in Model)
+                {
+                    <tr>
+                        <td>@reporte.Id</td>
+                        <td>@reporte.Nombre</td>
+                        <td>@reporte.Descripcion</td>
+                        <td>@reporte.Fecha.ToString("yyyy-MM-dd")</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" class="text-center">No hay reportes disponibles.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Inicio: Tabla adicional con AJAX para reportes -->
+    <h2>Reportes Adicionales</h2>
+    <table id="tablaReportes" class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Roles</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <!-- Inclusión de jQuery y script AJAX -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Llamada AJAX al método ConsultarDatos en el HomeController
+            $.ajax({
+                url: '@Url.Action("ConsultarDatos", "Home")',
+                type: 'GET',
+                success: function (data) {
+                    // Iterar sobre los datos y agregarlos a la tabla
+                    data.forEach(function (item) {
+                        $('#tablaReportes tbody').append(
+                            `<tr>
+                                        <td>${item.id}</td>
+                                        <td>${item.nombre}</td>
+                                        <td>${item.roles}</td>
+                                    </tr>`
+                        );
+                    });
+                },
+                error: function () {
+                    alert("Error al cargar los datos de reportes adicionales");
+                }
+            });
+        });
+    </script>
+    <!-- Fin: Tabla adicional con AJAX para reportes -->
+</div>
