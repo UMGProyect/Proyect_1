@@ -155,7 +155,36 @@ namespace Proyect_1.Services
             }
             return comments;
         }
+        public bool UpdateProfilePicture(string userName, string imageUrl)
+        {
+            using (SqlConnection contextBD = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    contextBD.Open();
+
+                    string query = "UPDATE Usuario SET imagen_perfil_url = @imageUrl WHERE username = @username";
+                    using (SqlCommand command = new SqlCommand(query, contextBD))
+                    {
+                        command.Parameters.AddWithValue("@imageUrl", imageUrl);
+                        command.Parameters.AddWithValue("@username", userName);
+
+                        // Ejecuta el comando y devuelve true si se actualizó con éxito
+                        int rowsAffected = command.ExecuteNonQuery();
+                        return rowsAffected > 0; // Retorna true si se actualizó algún registro
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error al actualizar la imagen de perfil: {ex.Message}");
+                    return false; // En caso de error, retorna false
+                }
+            }
+        }
+
     }
+
+
 }
 
 

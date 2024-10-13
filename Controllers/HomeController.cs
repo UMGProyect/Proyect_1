@@ -42,16 +42,13 @@ namespace Proyect_1.Controllers
 
 
         //***************************
-        public ActionResult Index()
-        {
-            return View();
-        }
-
+        
        
         //Metodo para subir una imagen al servidor de archivos. 
         [HttpPost]
-        public async Task<IActionResult> Index(IFormFile file)
+        public async Task<IActionResult> EditarPerfil(IFormFile file)
         {
+            
             if (file != null && file.Length > 0)
             {
                 string url = await _blobService.UploadFileAsync(file);
@@ -62,8 +59,8 @@ namespace Proyect_1.Controllers
                     ModelState.AddModelError("file", "Error al cargar el archivo.");
                     return View(); // Retorna la vista con error
                 }
-
-                ViewBag.ImageUrl = url; // Asigna la URL a ViewBag
+                _userService.UpdateProfilePicture(HttpContext.Session.GetString("UserName"), url);
+                return RedirectToAction("Perfil");
             }
             else
             {

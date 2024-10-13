@@ -31,7 +31,12 @@
         <!-- Banner de usuario -->
         <div class="banner" style="background-image: url('@Model.BannerImageUrl'); height: 300px; background-size: cover; position: relative;">
             <div class="position-absolute" style="bottom: -50px; left: 20px;">
-                <img src="@Model.ProfilePictureUrl" alt="@Model.UserName" class="profile-picture rounded-circle" style="width: 150px; border: 5px solid white;">
+                <form asp-action="EditarPerfil" method="post" enctype="multipart/form-data">
+                    <input type="file" name="file" id="profile-image-upload" style="display: none;" accept="image/*" onchange="this.form.submit();">
+                    <label for="profile-image-upload">
+                        <img src="@Model.ProfilePictureUrl" alt="@Model.UserName" class="profile-picture rounded-circle" style="width: 150px; border: 5px solid white; cursor: pointer;">
+                    </label>
+                </form>
             </div>
         </div>
 
