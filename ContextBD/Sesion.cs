@@ -16,7 +16,7 @@ namespace Proyect_1.ContextBD
                 try
                 {
                     contextBD.Open();
-                    string query = "SELECT password FROM login WHERE [user] = @name";
+                    string query = "SELECT password FROM Usuario WHERE [username] = @name";
                     SqlCommand command = new SqlCommand(query, contextBD);
                     command.Parameters.AddWithValue("@name", model.Name);
                     string? storedHash = command.ExecuteScalar()?.ToString();

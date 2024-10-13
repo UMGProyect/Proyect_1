@@ -19,7 +19,7 @@ namespace Proyect_1.Controllers
         private readonly HttpClient _httpClient;
         private readonly string _secretKey; //permitir null para _secretKey
         private readonly BlobService _blobService;
-
+        private readonly BD_User _userService;
 
         private readonly ILogger<HomeController> _logger;
         //Instancia de sesión.
@@ -27,7 +27,7 @@ namespace Proyect_1.Controllers
         private readonly ReportService _reportService;
 
         // constructor con inyeccion del servicio
-        public HomeController(ILogger<HomeController> logger, ReportService reportService, BlobService blobService)
+        public HomeController(ILogger<HomeController> logger, ReportService reportService, BlobService blobService, BD_User userService)
 
         {
 
@@ -36,18 +36,19 @@ namespace Proyect_1.Controllers
             _httpClient = new HttpClient(); //Inicializa HttpCliente
             _secretKey = "mi_secreto"; //proporciona un valor para la clave secreta
             _blobService = blobService;
+            _userService = userService;
 
         }
 
+
+        //***************************
         public ActionResult Index()
         {
             return View();
         }
 
        
-        //Metodo para subir una imagen al servidor de archivos.
-
-
+        //Metodo para subir una imagen al servidor de archivos. 
         [HttpPost]
         public async Task<IActionResult> Index(IFormFile file)
         {
@@ -71,6 +72,11 @@ namespace Proyect_1.Controllers
 
             return View(); // Retorna la vista
         }
+
+
+        //***************************
+
+
 
 
         // Aquí agregamos el nuevo método ConsultarDatos
@@ -127,51 +133,32 @@ namespace Proyect_1.Controllers
 
         //PERFIL
         public IActionResult PerfilUser()
-        { 
-            return View(); 
-        }
-
-        public IActionResult Perfil(string username)
         {
-            var viewModel = new UserProfileViewModel
-            {
-                UserName = username,
-                BannerImageUrl = "/images/default-banner.jpg",
-                ProfilePictureUrl = "/images/default-profile.jpg",
-                Bio = "Esta es una biografía de ejemplo.",
-                Posts = new List<PostViewModel>
-                {
-                    new PostViewModel
-                    {
-                        Title = "Mi primera publicación",
-                        Content = "¡Hola a todos! Esta es mi primera publicación en esta red social.",
-                        CreatedAt = DateTime.Now.AddDays(-5),
-                        ImageUrl = "/images/IMG_10.png",
-                        Likes = 15,
-                        Comments = new List<CommentViewModel>
-                        {
-                            new CommentViewModel { UserName = "Usuario1", Content = "¡Bienvenido a la red social!" },
-                            new CommentViewModel { UserName = "Usuario2", Content = "Genial, espero ver más publicaciones tuyas." }
-                        }
-                    },
-                    new PostViewModel
-                    {
-                        Title = "Actualizando mi perfil",
-                        Content = "Acabo de actualizar mi perfil con nueva información.",
-                        CreatedAt = DateTime.Now.AddDays(-2),
-                        Likes = 8,
-                        Comments = new List<CommentViewModel>
-                        {
-                            new CommentViewModel { UserName = "Usuario3", Content = "¡Tu perfil se ve genial ahora!" }
-                        }
-                    }
-                }
-            };
 
-            return View(viewModel);
+            return RedirectToAction("Perfil");
         }
-    
-        public IActionResult MenuPrincipal()
+
+        public IActionResult Perfil()
+        {
+            // Obtener el nombre de usuario de la sesión
+            var userName = HttpContext.Session.GetString("UserName");
+
+            if (string.IsNullOrEmpty(userName))
+            {
+                return NotFound(); // Manejo de error si no se encuentra el nombre de usuario
+            }
+
+            // Obtener el perfil del usuario utilizando el servicio
+            var viewModel = _userService.GetUserProfile(userName);
+
+            if (viewModel == null)
+            {
+                return NotFound(); // Manejo de error si no se encuentra el perfil
+            }
+            return View(viewModel); // Devuelve la vista con el modelo del perfil de usuario
+        }
+
+    public IActionResult MenuPrincipal()
         {
             return View();
         }
@@ -255,7 +242,7 @@ namespace Proyect_1.Controllers
                 HttpContext.Session.SetString("UserName", model.Name);
                 HttpContext.Session.SetString("IsAuthenticated", "true");
                 HttpContext.Session.Remove("LoginAttempts"); // Restablecer el contador de intentos
-                return RedirectToAction("Main");
+                return RedirectToAction("Perfil");
             }
             else
             {

@@ -1,34 +1,163 @@
-﻿using Azure.Storage.Blobs;
-using System.IO;
-using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using Proyect_1.ContextBD;
+using Proyect_1.Models;
 
-public class BlobStorageService
+namespace Proyect_1.Services
 {
-    private readonly BlobServiceClient _blobServiceClient;
-    private readonly string _containerName;
-
-    public BlobStorageService(IConfiguration configuration)
+    public class BD_User
     {
-        var connectionString = configuration.GetSection("BlobStorage:ConnectionString").Value;
-        _containerName = configuration.GetSection("BlobStorage:ContainerName").Value;
-        _blobServiceClient = new BlobServiceClient(connectionString);
-    }
+        static string connectionString = BD.connectionString;
 
-    public async Task<string> UploadFileAsync(Stream fileStream, string fileName)
-    {
-        var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
-        var blobClient = containerClient.GetBlobClient(fileName);
+        // Método para obtener el perfil de un usuario
+        public UserProfileViewModel GetUserProfile(string userName)
+        {
+            using (SqlConnection contextBD = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    contextBD.Open();
 
-        await blobClient.UploadAsync(fileStream, true);
-        return blobClient.Uri.ToString(); // Retorna la URL del archivo subido
-    }
+                    // Obtener información del usuario
+                    var user = GetUserInfo(userName, contextBD);
+                    if (user == null) return null;
 
-    public async Task<Stream> DownloadFileAsync(string fileName)
-    {
-        var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
-        var blobClient = containerClient.GetBlobClient(fileName);
-        var response = await blobClient.DownloadAsync();
+                    // Obtener publicaciones del usuario
+                    var userPosts = GetUserPosts(user.id_user, contextBD);
+                    List<PostViewModel> posts;
 
-        return response.Value.Content;
+                    if (userPosts is string message) // Verifica si el retorno es un mensaje
+                    {
+                        // Si no se encontraron publicaciones, puedes decidir cómo manejar esto
+                        // Aquí se puede agregar una lógica para manejar el mensaje o dejar la lista vacía
+                        posts = new List<PostViewModel>(); // Puedes dejar la lista vacía si no hay publicaciones
+                    }
+                    else
+                    {
+                        posts = (List<PostViewModel>)userPosts; // Si hay publicaciones, cast a List<PostViewModel>
+                    }
+
+                    return new UserProfileViewModel
+                    {
+                        UserName = user.username,
+                        Bio = user.biografia,
+                        ProfilePictureUrl = user.imagen_perfil_url,
+                        BannerImageUrl = user.imagen_baner_url,
+                        Posts = posts
+                    };
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error al obtener el perfil del usuario: {ex.Message}");
+                    throw new Exception("Error en la conexión a la base de datos: " + ex.Message);
+                }
+            }
+        }
+
+        // Método para obtener información del usuario
+        private dynamic GetUserInfo(string userName, SqlConnection contextBD)
+        {
+            string query = "SELECT id_user, username, biografia, imagen_perfil_url, imagen_baner_url FROM Usuario WHERE username = @username";
+            using (SqlCommand command = new SqlCommand(query, contextBD))
+            {
+                command.Parameters.AddWithValue("@username", userName);
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+
+                        return new
+                        {
+                            id_user = reader.GetInt32(0),
+                            username = reader.GetString(1),
+                            biografia = reader.IsDBNull(2) ? null : reader.GetString(2),
+                            imagen_perfil_url = reader.IsDBNull(3) ? null : reader.GetString(3),
+                            imagen_baner_url = reader.IsDBNull(4) ? null : reader.GetString(4)
+                        };
+                    }
+                }
+            }
+            return null; // Usuario no encontrado
+        }
+
+        // Método para obtener las publicaciones del usuario
+        private List<PostViewModel> GetUserPosts(int userId, SqlConnection contextBD)
+        {
+            var posts = new List<PostViewModel>();
+            string query = "SELECT id_publicacion, tipo_publicacion, descripcion, archivo_url, fecha_publicacion FROM Publicacion WHERE id_user = @userId";
+
+            using (SqlCommand command = new SqlCommand(query, contextBD))
+            {
+                command.Parameters.AddWithValue("@userId", userId);
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var postId = reader.GetInt32(0);
+                        var post = new PostViewModel
+                        {
+                            Title = reader.GetString(1), // Suponiendo que "tipo_publicacion" es el título
+                            Content = reader.IsDBNull(2) ? null : reader.GetString(2),
+                            ImageUrl = reader.IsDBNull(3) ? null : reader.GetString(3),
+                            CreatedAt = reader.GetDateTime(4),
+                            Likes = 0, // Inicializar a 0 temporalmente
+                            Comments = new List<CommentViewModel>() // Inicializar a lista vacía temporalmente
+                        };
+
+                        // Cerrar el DataReader antes de hacer más consultas
+                        
+
+                        // Obtener likes y comentarios ahora
+                        post.Likes = GetPostLikes(postId, contextBD);
+                        post.Comments = GetPostComments(postId, contextBD);
+                        
+                        posts.Add(post);
+                    }
+                }
+            }
+            return posts;
+        }
+
+
+
+        // Método para obtener los likes de una publicación
+        private int GetPostLikes(int postId, SqlConnection contextBD)
+        {
+            string query = "SELECT COUNT(*) FROM Reaccion WHERE id_publicacion = @postId AND tipo_reaccion = 'like'";
+            using (SqlCommand command = new SqlCommand(query, contextBD))
+            {
+                command.Parameters.AddWithValue("@postId", postId);
+                return (int)command.ExecuteScalar(); // Retorna el número de 'likes'
+            }
+        }
+
+        // Método para obtener los comentarios de una publicación
+        private List<CommentViewModel> GetPostComments(int postId, SqlConnection contextBD)
+        {
+            var comments = new List<CommentViewModel>();
+            string query = "SELECT id_user, contenido, fecha_comentario FROM Comentario WHERE id_publicacion = @postId";
+            using (SqlCommand command = new SqlCommand(query, contextBD))
+            {
+                command.Parameters.AddWithValue("@postId", postId);
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        comments.Add(new CommentViewModel
+                        {
+                            UserName = reader.GetString(0), // Suponiendo que el nombre de usuario se puede obtener directamente
+                            Content = reader.GetString(1),
+                            CreatedAt = reader.GetDateTime(2)
+                        });
+                    }
+                }
+            }
+            return comments;
+        }
     }
 }
+
+
+
+

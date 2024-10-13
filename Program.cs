@@ -26,6 +26,7 @@ builder.Services.AddSession(options =>
 
 //Registrar el ReportService
 builder.Services.AddSingleton<BlobService>(); // Asegúrate de que esta línea esté presente
+builder.Services.AddSingleton<BD_User>();
 builder.Services.AddSingleton<ReportService>();//Registrar el servicio correctamente
 
 var app = builder.Build();
@@ -50,7 +51,7 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Login}/{id?}");
 
 app.Run();
 
