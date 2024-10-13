@@ -16,7 +16,7 @@ namespace Proyect_1.ContextBD
                 try
                 {
                     contextBD.Open();
-                    string query = "SELECT password FROM Usuario WHERE [username] = @name";
+                    string query = "SELECT password FROM login WHERE [user] = @name";
                     SqlCommand command = new SqlCommand(query, contextBD);
                     command.Parameters.AddWithValue("@name", model.Name);
                     string? storedHash = command.ExecuteScalar()?.ToString();
@@ -77,46 +77,9 @@ namespace Proyect_1.ContextBD
             }
         }
 
-
-
-
-        //Registrar Usuario
-        public bool RegisterUser(User model)
+        internal bool RegisterUser(User model)
         {
-            using (SqlConnection contextBD = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    contextBD.Open();
-                    // Verificar si el nombre de usuario ya existe
-                    string queryCheck = "SELECT COUNT(*) FROM login WHERE [user] = @name";
-                    SqlCommand commandCheck = new SqlCommand(queryCheck, contextBD);
-                    commandCheck.Parameters.AddWithValue("@name", model.Name);
-                    int userExists = (int)commandCheck.ExecuteScalar();
-
-                    if (userExists > 0)
-                    {
-                        return false; // Usuario ya existe
-                    }
-
-                    // Insertar el nuevo usuario en la base de datos
-                    string query = "INSERT INTO login ([user], password) VALUES (@name, @password)";
-                    SqlCommand command = new SqlCommand(query, contextBD);
-                    command.Parameters.AddWithValue("@name", model.Name);
-                    command.Parameters.AddWithValue("@password", ComputeSha256Hash(model.Password)); // Encriptar la contraseña
-
-                    int result = command.ExecuteNonQuery();
-                    contextBD.Close();
-
-                    return result > 0; // Retorna true si se insertó correctamente
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error al registrar el usuario: {ex.Message}");
-                    throw new Exception("Error en la conexión a la base de datos (RegisterUser)" + ex.Message);
-                }
-            }
+            throw new NotImplementedException();
         }
-
     }
 }

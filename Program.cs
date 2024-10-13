@@ -1,5 +1,13 @@
+using Microsoft.AspNetCore.Identity;
+using Proyect_1.Models;
 using Proyect_1.Services;
 using Sentry.Profiling;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Proyect_1.ContextBD;
+
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +31,10 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 //Registrar el ReportService
 builder.Services.AddSingleton<BlobService>(); // Asegúrate de que esta línea esté presente
