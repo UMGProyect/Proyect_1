@@ -24,6 +24,8 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+
+
 //Registrar el ReportService
 builder.Services.AddSingleton<BlobService>(); // Asegúrate de que esta línea esté presente
 builder.Services.AddSingleton<BD_User>();

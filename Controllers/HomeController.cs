@@ -238,6 +238,7 @@ namespace Proyect_1.Controllers
                 // Autenticación exitosa
                 HttpContext.Session.SetString("UserName", model.Name);
                 HttpContext.Session.SetString("IsAuthenticated", "true");
+                ViewBag.IsAuthenticated = HttpContext.Session.GetString("IsAuthenticated");
                 HttpContext.Session.Remove("LoginAttempts"); // Restablecer el contador de intentos
                 return RedirectToAction("Perfil");
             }

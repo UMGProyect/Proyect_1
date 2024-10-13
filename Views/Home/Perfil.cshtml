@@ -142,7 +142,12 @@
             document.getElementById('file-upload').click();
         });
     </script>
-
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Muestra el contenedor del botón cuando la página se haya cargado
+            document.getElementById("buttonContainer").style.display = "block";
+        });
+    </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
