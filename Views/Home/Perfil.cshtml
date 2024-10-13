@@ -29,16 +29,26 @@
 
     <div class="container-fluid p-0">
         <!-- Banner de usuario -->
-        <div class="banner" style="background-image: url('@Model.BannerImageUrl'); height: 300px; background-size: cover; position: relative;">
-            <div class="position-absolute" style="bottom: -50px; left: 20px;">
-                <form asp-action="EditarPerfil" method="post" enctype="multipart/form-data">
-                    <input type="file" name="file" id="profile-image-upload" style="display: none;" accept="image/*" onchange="this.form.submit();">
-                    <label for="profile-image-upload">
-                        <img src="@Model.ProfilePictureUrl" alt="@Model.UserName" class="profile-picture rounded-circle" style="width: 150px; border: 5px solid white; cursor: pointer;">
-                    </label>
-                </form>
+        <!-- Formulario para el Banner y la Imagen de Perfil -->
+        <form asp-action="EditarPerfil" method="post" enctype="multipart/form-data">
+            <!-- Banner de usuario -->
+            <div class="banner" style="background-image: url('@Model.BannerImageUrl'); height: 300px; background-size: cover; position: relative;">
+                <input type="file" name="bannerFile" id="banner-image-upload" style="display: none;" accept="image/*" onchange="this.form.submit();">
+                <label for="banner-image-upload" style="cursor: pointer; height: 100%; width: 100%; display: block;">
+                    <div class="overlay" style="height: 100%; width: 100%; position: absolute; background: rgba(0, 0, 0, 0.3);"></div>
+                </label>
             </div>
-        </div>
+
+            <!-- Sección para la imagen del perfil -->
+            <div class="profile-picture-container" style="position: relative;">
+                <input type="file" name="profilePictureFile" id="profile-image-upload" style="display: none;" accept="image/*" onchange="this.form.submit();">
+                <label for="profile-image-upload" style="cursor: pointer;">
+                    <img src="@Model.ProfilePictureUrl" alt="@Model.UserName" class="profile-picture rounded-circle" style="width: 150px; border: 5px solid white;">
+                </label>
+            </div>
+        </form>
+
+
 
         <div class="container mt-5">
             <div class="row">
@@ -137,12 +147,19 @@
         </div>
     </div>
 
+    
+
     <script>
         document.getElementById('btn-upload-photo').addEventListener('click', function () {
             document.getElementById('file-upload').click();
         });
     </script>
-
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Muestra el contenedor del botón cuando la página se haya cargado
+            document.getElementById("buttonContainer").style.display = "block";
+        });
+    </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

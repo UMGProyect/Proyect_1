@@ -46,29 +46,47 @@ namespace Proyect_1.Controllers
        
         //Metodo para subir una imagen al servidor de archivos. 
         [HttpPost]
-        public async Task<IActionResult> EditarPerfil(IFormFile file)
+        public async Task<IActionResult> EditarPerfil(IFormFile profilePictureFile, IFormFile bannerFile)
         {
-            
-            if (file != null && file.Length > 0)
+            // Verifica si se ha subido una nueva foto de perfil
+            if (profilePictureFile != null && profilePictureFile.Length > 0)
             {
-                string url = await _blobService.UploadFileAsync(file);
+                string profilePictureUrl = await _blobService.UploadFileAsync(profilePictureFile);
 
-                // Verifica si la URL es null
-                if (url == null)
+                // Verifica si la URL de la foto de perfil es null
+                if (profilePictureUrl == null)
                 {
-                    ModelState.AddModelError("file", "Error al cargar el archivo.");
+                    ModelState.AddModelError("profilePictureFile", "Error al cargar la foto de perfil.");
                     return View(); // Retorna la vista con error
                 }
-                _userService.UpdateProfilePicture(HttpContext.Session.GetString("UserName"), url);
-                return RedirectToAction("Perfil");
+
+                // Actualiza la foto de perfil
+                _userService.UpdateProfilePicture(HttpContext.Session.GetString("UserName"), profilePictureUrl);
+            }
+
+            // Verifica si se ha subido un nuevo banner
+            if (bannerFile != null && bannerFile.Length > 0)
+            {
+                string bannerUrl = await _blobService.UploadFileAsync(bannerFile);
+
+                // Verifica si la URL del banner es null
+                if (bannerUrl == null)
+                {
+                    ModelState.AddModelError("bannerFile", "Error al cargar el banner.");
+                    return View(); // Retorna la vista con error
+                }
+
+                // Actualiza la URL del banner
+                _userService.UpdateBannerUrl(HttpContext.Session.GetString("UserName"), bannerUrl);
             }
             else
             {
-                ModelState.AddModelError("file", "Por favor selecciona un archivo.");
+                ModelState.AddModelError("bannerFile", "Por favor selecciona un archivo para el banner.");
             }
 
-            return View(); // Retorna la vista
+            return RedirectToAction("Perfil"); // Redirige a la vista del perfil
         }
+
 
 
         //***************************
@@ -238,6 +256,7 @@ namespace Proyect_1.Controllers
                 // Autenticación exitosa
                 HttpContext.Session.SetString("UserName", model.Name);
                 HttpContext.Session.SetString("IsAuthenticated", "true");
+                ViewBag.IsAuthenticated = HttpContext.Session.GetString("IsAuthenticated");
                 HttpContext.Session.Remove("LoginAttempts"); // Restablecer el contador de intentos
                 return RedirectToAction("Perfil");
             }
