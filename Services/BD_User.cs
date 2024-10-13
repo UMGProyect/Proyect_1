@@ -85,7 +85,7 @@ namespace Proyect_1.Services
         private List<PostViewModel> GetUserPosts(int userId, SqlConnection contextBD)
         {
             var posts = new List<PostViewModel>();
-            string query = "SELECT id_publicacion, tipo_publicacion, descripcion, archivo_url, fecha_publicacion FROM Publicacion WHERE id_user = @userId";
+            string query = "SELECT id_publicacion, titulo, descripcion, archivo_url, fecha_publicacion FROM Publicacion WHERE id_user = @userId";
 
             using (SqlCommand command = new SqlCommand(query, contextBD))
             {
@@ -181,6 +181,60 @@ namespace Proyect_1.Services
                 }
             }
         }
+
+
+        public List<PostViewModel> GetRandomPosts()
+        {
+            using (SqlConnection contextBD = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    contextBD.Open();
+
+                    // Obtener publicaciones aleatorias con el nombre de usuario y su foto de perfil
+                    var posts = new List<PostViewModel>();
+                    string query = @"
+                SELECT p.id_publicacion, p.titulo, p.descripcion, p.archivo_url, p.fecha_publicacion, 
+                       u.username, u.imagen_perfil_url
+                FROM Publicacion p
+                INNER JOIN Usuario u ON p.id_user = u.id_user
+                ORDER BY NEWID()";  // Ordena las publicaciones de manera aleatoria
+
+                    using (SqlCommand command = new SqlCommand(query, contextBD))
+                    {
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var postId = reader.GetInt32(0);
+                                var post = new PostViewModel
+                                {
+                                    PostId = postId,
+                                    Title = reader.GetString(1),
+                                    Content = reader.GetString(2),
+                                    ImageUrl = reader.IsDBNull(3) ? null : reader.GetString(3),
+                                    CreatedAt = reader.GetDateTime(4),
+                                    UserName = reader.GetString(5), // Nombre del usuario
+                                    UserProfileImage = reader.IsDBNull(6) ? null : reader.GetString(6), // Foto de perfil
+                                    Comments = GetPostComments(postId, contextBD) // Obtener comentarios de la publicación
+                                };
+                                posts.Add(post);
+                            }
+                        }
+                    }
+
+                    return posts;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error al obtener publicaciones: {ex.Message}");
+                    throw new Exception("Error en la conexión a la base de datos: " + ex.Message);
+                }
+            }
+        }
+
+
+
 
     }
 

@@ -70,8 +70,31 @@ namespace Proyect_1.Controllers
             return View(); // Retorna la vista
         }
 
+        public IActionResult MenuPrincipal()
+        {
+            var userName = HttpContext.Session.GetString("UserName");
 
-        //***************************
+            if (string.IsNullOrEmpty(userName))
+            {
+                return NotFound(); // Manejo de error si no se encuentra el nombre de usuario
+            }
+
+            // Obtener el perfil del usuario utilizando el servicio
+            var viewModel = _userService.GetUserProfile(userName);
+
+            if (viewModel == null)
+            {
+                return NotFound(); // Manejo de error si no se encuentra el perfil
+            }
+
+            // Obtener publicaciones aleatorias
+            var randomPosts = _userService.GetRandomPosts(); // Método que acabamos de crear
+
+            // Pasar las publicaciones al modelo
+            viewModel.Posts = randomPosts;
+
+            return View(viewModel);
+        }
 
 
 
@@ -155,10 +178,7 @@ namespace Proyect_1.Controllers
             return View(viewModel); // Devuelve la vista con el modelo del perfil de usuario
         }
 
-    public IActionResult MenuPrincipal()
-        {
-            return View();
-        }
+   
 
         public IActionResult Main(User model)
         {
@@ -239,7 +259,7 @@ namespace Proyect_1.Controllers
                 HttpContext.Session.SetString("UserName", model.Name);
                 HttpContext.Session.SetString("IsAuthenticated", "true");
                 HttpContext.Session.Remove("LoginAttempts"); // Restablecer el contador de intentos
-                return RedirectToAction("Perfil");
+                return RedirectToAction("MenuPrincipal");
             }
             else
             {

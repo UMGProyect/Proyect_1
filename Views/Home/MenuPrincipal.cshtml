@@ -1,91 +1,125 @@
-﻿@{
-    ViewData["Title"] = "Inicio";
+﻿@model Proyect_1.Models.UserProfileViewModel
+@{
+    ViewData["Title"] = "MenuPrincipal";
 }
 
-<!--if (User.Identity.IsAuthenticated){ -->
-
-    <!--Barra superior con buscador y opción de subir historias -->
-
-    <div class="container-fluid bg-light p-3">
-        <div class="row align-items-center">
-<div class="col-md-3">
-    <!-- Imagen para subir historias(puedes integrar funcionalidad de backend) -->
-
-    <img src = "/images/upload-story.png" class="rounded-circle" width="50" height="50" alt="Subir historia">
-    <span>Subir Historia</span>
-</div>
-<div class="col-md-6">
-    <!-- Barra de búsqueda -->
-    <input type = "text" class="form-control" placeholder="Buscar amigos o publicaciones...">
-</div>
-<div class="col-md-3 text-right">
-    <!-- Foto de perfil con opción de abrir perfil -->
-    <img src = "/images/perfil.png" class="rounded-circle" width="50" height="50" alt="Foto de perfil">
-    <span>Mi Perfil</span>
-</div>
+<!-- Barra superior con buscador y opción de subir historias -->
+<div class="container-fluid bg-light p-3">
+    <div class="row align-items-center">
+        <div class="col-md-3">
+            <!-- Imagen para subir historias -->
+            <img src="/images/logoUMG.png" class="rounded-circle" width="50" height="50" alt="Subir historia">
+            <span>Subir Historia</span>
+        </div>
+        <div class="col-md-6">
+            <!-- Barra de búsqueda -->
+            <input type="text" class="form-control" placeholder="Buscar amigos o publicaciones...">
+        </div>
+        <div class="col-md-3 text-right">
+            <!-- Foto de perfil con opción de abrir perfil -->
+            <img src="@Model.ProfilePictureUrl" class="rounded-circle" width="50" height="50" alt="Foto de perfil">
+            <span>Mi Perfil</span>
         </div>
     </div>
-
-    <div class="container mt-4">
-        <div class="row">
-<!-- Columna de Menú Izquierda -->
-<div class="col-md-3">
-    <h5>Menú</h5>
-    <ul class="list-group">
-        <li class="list-group-item">
-            <a class="nav-link" href="/Perfil">Mi Perfil</a>
-        </li>
-        <li class="list-group-item">
-            <a class="nav-link" href="/Amigos">Amigos</a>
-        </li>
-        <li class="list-group-item">
-            <a class="nav-link" href="/Videos">Videos</a>
-        </li>
-        <li class="list-group-item">
-            <a class="nav-link" href="/Logout">Cerrar Sesión</a>
-        </li>
-    </ul>
 </div>
 
-<!-- Columna de Publicaciones en el Centro -->
-<div class="col-md-6">
-    <h5>¿Qué estás pensando?</h5>
-
-    <!-- Formulario para crear una nueva publicación -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <textarea id = "newPostContent" class="form-control" rows="3" placeholder="Escribe algo..."></textarea>
-            <button id = "postButton" class="btn btn-primary mt-2">Publicar</button>
+<div class="container mt-4">
+    <div class="row">
+        <!-- Columna de Menú Izquierda -->
+        <div class="col-md-3">
+            <h5>Menú</h5>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a asp-area="" asp-controller="Home" asp-action="Perfil">Perfil</a>
+                </li>
+                <li class="list-group-item">
+                    <a class="nav-link" href="/Amigos">Amigos</a>
+                </li>
+                <li class="list-group-item">
+                    <a class="nav-link" href="/Videos">Videos</a>
+                </li>
+                <li class="list-group-item">
+                    <a class="nav-link" href="/Logout">Cerrar Sesión</a>
+                </li>
+            </ul>
         </div>
-    </div>
 
-    <!-- Sección donde se mostrarán las publicaciones -->
-    <div id = "postsContainer" >
-        <!--Publicaciones se cargarán aquí dinámicamente -->
-    </div>
+        <!-- Columna de Publicaciones en el Centro -->
+        <div class="col-md-6">
+            <h5>¿Qué estás pensando?</h5>
 
-
+            <!-- Formulario para crear una nueva publicación -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <textarea id="newPostContent" class="form-control" rows="3" placeholder="Escribe algo..."></textarea>
+                    <button id="postButton" class="btn btn-primary mt-2">Publicar</button>
+                </div>
             </div>
 
-            <!-- Columna Derecha para Contenido Adicional o Amigos -->
-            <div class="col-md-3">
-                <h5>Amigos Sugeridos</h5>
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <strong>Amigo 1</strong> <button class="btn btn-sm btn-primary float-right">Añadir</button>
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Amigo 2</strong> <button class="btn btn-sm btn-primary float-right">Añadir</button>
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Amigo 3</strong> <button class="btn btn-sm btn-primary float-right">Añadir</button>
-                    </li>
-                </ul>
+            <!-- Sección donde se mostrarán las publicaciones -->
+            <div id="postsContainer">
+                <!-- Publicaciones se cargarán aquí dinámicamente -->
             </div>
+
+            <!-- Mostrar publicaciones -->
+            @foreach (var post in Model.Posts)
+            {
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <!-- Mostrar la foto de perfil y nombre de usuario -->
+                        <div class="d-flex align-items-center mb-3">
+                            @if (!string.IsNullOrEmpty(post.UserProfileImage))
+                            {
+                                <img src="@post.UserProfileImage" alt="Foto de perfil de @post.UserName" class="rounded-circle" width="40" height="40">
+                            }
+                            <strong class="ms-3">@post.UserName</strong> <!-- Bootstrap 5 margin-left (ms-3) para separar nombre e imagen -->
+                        </div>
+
+                        <!-- Título y contenido de la publicación -->
+                        <h5 class="card-title">@post.Title</h5>
+                        <p class="card-text">@post.Content</p>
+
+                        <!-- Imagen de la publicación (si existe) -->
+                        @if (!string.IsNullOrEmpty(post.ImageUrl))
+                        {
+                            <img src="@post.ImageUrl" alt="Imagen de la publicación" class="post-image img-fluid mb-3">
+                        }
+
+                        <!-- Reacciones y fecha de publicación -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">Publicado el @post.CreatedAt.ToString("dd/MM/yyyy")</small>
+                            <div>
+                                <span class="reaction-btn me-3"><i class="far fa-thumbs-up"></i> Me gusta (@post.Likes)</span>
+                                <span class="reaction-btn me-3"><i class="far fa-comment"></i> Comentarios (@post.Comments.Count)</span>
+                                <span class="reaction-btn"><i class="fas fa-share"></i> Compartir</span>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- Comentarios -->
+                        <h6>Comentarios:</h6>
+                        @foreach (var comment in post.Comments)
+                        {
+                            <div class="mb-2">
+                                <strong>@comment.UserName</strong>: @comment.Content
+                            </div>
+                        }
+
+                        <!-- Caja para añadir comentario -->
+                        <div class="mt-3">
+                            <textarea class="form-control comment-box" rows="1" placeholder="Escribe un comentario..."></textarea>
+                            <button class="btn btn-primary btn-sm mt-2">Comentar</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Columna Derecha para Contenido Adicional o Amigos -->
+        <div class="col-md-3">
+            <h5>Bienvenido a la Red Social</h5>
+            <p>Un gusto tenerte por aca!</p>
         </div>
     </div>
-    
-    <!--else
-    {
-      
-    } -->
+</div>

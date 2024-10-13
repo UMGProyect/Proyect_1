@@ -4,23 +4,24 @@
     ViewData["Title"] = "Login";
 }
 
-<!--voy a agregar vinculo con styles linea 9-->
-
+<!-- Enlace al archivo CSS -->
 <link rel="stylesheet" href="~/css/styles.css" />
 
 <div class="d-flex justify-content-center align-items-center vh-100">
-    <!--voy agregar el logo el login, linea 13,14 y 15-->
-    <img src="~/images/logoUMG.png" alt="Logo Universidad" class="logo" />
-    <div class="card p-4 shadow" style="width: 100%; max-width: 400px; margin-top: 80px;">
-        <h2 class="text-center mb-4">Iniciar Sesión</h2>
+    <!-- Logo del login -->
+    <img src="~/images/logoUMG.png" alt="Logo Universidad" class="logo mb-4" />
+
+    <!-- Tarjeta del formulario con estilo azul -->
+    <div class="card p-4 shadow login-card">
+        <h2 class="text-center mb-4 text-white">Iniciar Sesión</h2>
         <form asp-action="Login" method="post">
             <div class="form-group">
-                <label asp-for="Name">Nombre de Usuario</label>
+                <label asp-for="Name" class="text-white">Nombre de Usuario</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group mb-4">
-                <label asp-for="Password">Contraseña</label>
+                <label asp-for="Password" class="text-white">Contraseña</label>
                 <input asp-for="Password" class="form-control" type="password" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
@@ -28,7 +29,7 @@
             @if ((Context.Session.GetInt32("LoginAttempts") ?? 0) >= 5)
             {
                 <div class="form-group mb-4">
-                    <label>Verificación de reCAPTCHA</label>
+                    <label class="text-white">Verificación de reCAPTCHA</label>
                     <div class="g-recaptcha" data-sitekey="6Lepo1gqAAAAAJqO1RhlNUP5wE5cN0ZV3CAbNeOU" data-callback="onCaptchaSuccess"></div>
                     <span asp-validation-for="RecaptchaToken" class="text-danger"></span>
                 </div>
@@ -36,7 +37,7 @@
             }
 
             <div class="form-group mb-4">
-                <button type="submit" class="btn btn-primary btn-block">Iniciar Sesión</button>
+                <button type="submit" class="btn btn-light btn-block">Iniciar Sesión</button>
             </div>
         </form>
         <hr />
@@ -53,11 +54,9 @@
 
 <script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
 
-
 <script>
     function onCaptchaSuccess(token) {
         // Asigna el token al campo oculto
-        console.log(token);
         document.getElementById("recaptchaToken").value = token;
     }
 </script>

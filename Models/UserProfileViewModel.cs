@@ -11,13 +11,17 @@
 
     public class PostViewModel
     {
-        public string Title { get; set; }
-        public string Content { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public string ImageUrl { get; set; }
-        public int Likes { get; set; }
-        public List<CommentViewModel> Comments { get; set; }
+        public string Title { get; set; }                // Título de la publicación
+        public string Content { get; set; }              // Contenido de la publicación
+        public DateTime CreatedAt { get; set; }          // Fecha de creación de la publicación
+        public string ImageUrl { get; set; }             // URL de la imagen adjunta a la publicación (si existe)
+        public int Likes { get; set; }                   // Número de "Me gusta"
+        public List<CommentViewModel> Comments { get; set; } = new List<CommentViewModel>();  // Lista de comentarios de la publicación
+        public int PostId { get; set; }                  // ID de la publicación
+        public string UserName { get; set; }             // Nombre del usuario que realizó la publicación
+        public string UserProfileImage { get; set; }     
     }
+
 
     public class CommentViewModel
     {
