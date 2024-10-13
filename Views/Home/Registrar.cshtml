@@ -1,4 +1,10 @@
-﻿<form asp-action="Register" method="post">
+﻿@model Proyect_1.Models.User
+
+@{
+    ViewData["Title"] = "Registrar";
+}
+
+<form asp-action="Registro" method="post">
     <label for="Name">Nombre de Usuario</label>
     <input type="text" name="Name" required />
 
@@ -7,3 +13,4 @@
 
     <button type="submit">Registrar</button>
 </form>
+

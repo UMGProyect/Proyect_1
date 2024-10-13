@@ -25,6 +25,8 @@ builder.Services.AddSession(options =>
 });
 
 //Registrar el ReportService
+builder.Services.AddSingleton<BlobService>(); // Asegúrate de que esta línea esté presente
+builder.Services.AddSingleton<BD_User>();
 builder.Services.AddSingleton<ReportService>();//Registrar el servicio correctamente
 
 var app = builder.Build();
@@ -35,6 +37,10 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+// Almacenamiento de datos
+
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
