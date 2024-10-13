@@ -67,6 +67,53 @@ namespace Proyect_1.Controllers
             return View();
         }
 
+
+        //PERFIL
+        public IActionResult PerfilUser()
+        { 
+            return View(); 
+        }
+
+        public IActionResult Perfil(string username)
+        {
+            var viewModel = new UserProfileViewModel
+            {
+                UserName = username,
+                BannerImageUrl = "/images/default-banner.jpg",
+                ProfilePictureUrl = "/images/default-profile.jpg",
+                Bio = "Esta es una biografía de ejemplo.",
+                Posts = new List<PostViewModel>
+                {
+                    new PostViewModel
+                    {
+                        Title = "Mi primera publicación",
+                        Content = "¡Hola a todos! Esta es mi primera publicación en esta red social.",
+                        CreatedAt = DateTime.Now.AddDays(-5),
+                        ImageUrl = "/images/IMG_10.png",
+                        Likes = 15,
+                        Comments = new List<CommentViewModel>
+                        {
+                            new CommentViewModel { UserName = "Usuario1", Content = "¡Bienvenido a la red social!" },
+                            new CommentViewModel { UserName = "Usuario2", Content = "Genial, espero ver más publicaciones tuyas." }
+                        }
+                    },
+                    new PostViewModel
+                    {
+                        Title = "Actualizando mi perfil",
+                        Content = "Acabo de actualizar mi perfil con nueva información.",
+                        CreatedAt = DateTime.Now.AddDays(-2),
+                        Likes = 8,
+                        Comments = new List<CommentViewModel>
+                        {
+                            new CommentViewModel { UserName = "Usuario3", Content = "¡Tu perfil se ve genial ahora!" }
+                        }
+                    }
+                }
+            };
+
+            return View(viewModel);
+        }
+    
         public IActionResult MenuPrincipal()
         {
             return View();

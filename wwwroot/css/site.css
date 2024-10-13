@@ -162,39 +162,36 @@ body {
         text-decoration: underline; /* Subrayado al pasar el mouse */
     }
 
-.card {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
 
-textarea {
-    resize: none;
-}
 
-#newPostContent {
-    font-size: 1rem;
-}
+    /*  PERFIL FREDY*/
 
-#postButton {
-    float: right;
-}
-
-.card-footer a {
-    color: white;
-}
-
-.card-footer a:hover {
-    color: purple;
-}
-
-.list-group-item a{
-    color: blue;
-}
-
-.list-group-item a:hover {
-    color: purple !important; 
-}
-
-.card .card-body {
-    background-color: white;
-    color: black;
-}
+    .banner {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid white;
+            margin-top: -75px;
+        }
+        .post-image {
+            max-width: 100%;
+            height: auto;
+        }
+        .reaction-btn {
+            cursor: pointer;
+            user-select: none;
+        }
+        .comment-box {
+            resize: none;
+        }
+        .card-body {
+            color: black;
+        }
+        .card-body .text-muted {
+            color: #6c757d !important;
+        }
