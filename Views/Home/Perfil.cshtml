@@ -89,22 +89,28 @@
                 </div>
 
                 <!-- Columna derecha (Publicaciones) -->
-                <div class="col-md-9">
-                    <!-- Crear nueva publicación -->
-                    <div class="card">
-                        <div class="card-body">
-                            <textarea class="form-control" placeholder="¿Qué estás pensando?" rows="2"></textarea>
-                            <div class="d-flex justify-content-between mt-2">
-                                <div>
-                                    <button class="btn btn-link" id="btn-upload-photo"><i class="fas fa-camera"></i> Foto/Video</button>
-                                    <button class="btn btn-link"><i class="fas fa-smile"></i> Sentimiento</button>
-                                    <!-- Input de archivo oculto -->
-                                    <input type="file" id="file-upload" style="display: none;">
+                <form asp-action="CrearPublicacion" method="post" enctype="multipart/form-data">
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="card-body">
+                                <input type="text" name="title" class="form-control" placeholder="Título" required />
+                                <textarea name="content" class="form-control mt-2" placeholder="¿Qué estás pensando?" rows="2" required></textarea>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <div>
+                                        <button type="button" class="btn btn-link" id="btn-upload-photo">
+                                            <i class="fas fa-camera"></i> Foto/Video
+                                        </button>
+                                        <button type="button" class="btn btn-link"><i class="fas fa-smile"></i> Sentimiento</button>
+                                        <input type="file" name="mediaFile" id="file-upload" style="display: none;">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Publicar</button>
                                 </div>
-                                <button class="btn btn-primary">Publicar</button>
                             </div>
                         </div>
                     </div>
+                </form>
+
+
 
                     <!-- Publicaciones del usuario -->
                     @foreach (var post in Model.Posts)

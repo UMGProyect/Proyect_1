@@ -42,8 +42,33 @@ namespace Proyect_1.Controllers
 
 
         //***************************
-        
-       
+
+        //Publicar algo
+        [HttpPost]
+        [HttpPost]
+        public async Task<IActionResult> CrearPublicacion(string title, string content, IFormFile mediaFile)
+        {
+            string userName = HttpContext.Session.GetString("UserName");
+
+            string mediaUrl = null;
+
+            if (mediaFile != null && mediaFile.Length > 0)
+            {
+                mediaUrl = await _blobService.UploadFileAsync(mediaFile);
+                if (mediaUrl == null)
+                {
+                    ModelState.AddModelError("file", "Error al cargar el archivo.");
+                    return View(); // Retorna la vista con error
+                }
+            }
+
+            _userService.CreatePost(userName, title, content, mediaUrl); // Pasamos title, content y mediaUrl
+            return RedirectToAction("Perfil");
+        }
+
+
+
+
         //Metodo para subir una imagen al servidor de archivos. 
         [HttpPost]
         public async Task<IActionResult> EditarPerfil(IFormFile profilePictureFile, IFormFile bannerFile)
@@ -132,18 +157,26 @@ namespace Proyect_1.Controllers
 
         public IActionResult Registro(User model)
         {
-                bool success = iniciar_sesion.RegisterUser(model);
-                if (success)
-                {
-                    return RedirectToAction("Login");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "El nombre de usuario ya existe.");
-                }
-            
-            return View(model);
+            // Verificar si el modelo es válido antes de proceder
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Registrar");
+            }
+
+            // Lógica para registrar el usuario
+            bool success = iniciar_sesion.RegisterUser(model);
+            if (success)
+            {
+                return RedirectToAction("Login");
+            }
+            else
+            {
+                ModelState.AddModelError("", "El nombre de usuario ya existe.");
+            }
+
+            return RedirectToAction("Registrar");
         }
+
 
 
         //PERFIL
