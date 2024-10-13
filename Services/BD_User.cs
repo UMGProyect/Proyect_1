@@ -155,6 +155,13 @@ namespace Proyect_1.Services
             }
             return comments;
         }
+
+
+        //***************************************
+        //*************************************** EDITAR PERFIL DE USUARIO
+        //***************************************
+
+
         public bool UpdateProfilePicture(string userName, string imageUrl)
         {
             using (SqlConnection contextBD = new SqlConnection(connectionString))
@@ -181,6 +188,51 @@ namespace Proyect_1.Services
                 }
             }
         }
+
+        // Método para actualizar la URL del banner de un usuario
+        public bool UpdateBannerUrl(string userName, string newBannerUrl)
+        {
+            using (SqlConnection contextBD = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    contextBD.Open();
+
+                    // Comenzar la transacción
+                    using (var transaction = contextBD.BeginTransaction())
+                    {
+                        // Actualizar la URL del banner
+                        string query = "UPDATE Usuario SET imagen_baner_url = @newBannerUrl WHERE username = @username";
+                        using (SqlCommand command = new SqlCommand(query, contextBD, transaction))
+                        {
+                            command.Parameters.AddWithValue("@newBannerUrl", newBannerUrl);
+                            command.Parameters.AddWithValue("@username", userName);
+
+                            int rowsAffected = command.ExecuteNonQuery();
+
+                            // Si se actualizó al menos una fila, confirmar la transacción
+                            if (rowsAffected > 0)
+                            {
+                                transaction.Commit();
+                                return true; // Actualización exitosa
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error al actualizar la URL del banner: {ex.Message}");
+                    throw new Exception("Error en la conexión a la base de datos: " + ex.Message);
+                }
+            }
+
+            return false; // No se realizó ninguna actualización
+        }
+
+
+        //***************************************
+        //*************************************** EDITAR PERFIL DE USUARIO
+        //***************************************
 
     }
 
