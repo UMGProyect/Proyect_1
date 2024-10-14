@@ -85,7 +85,7 @@ namespace Proyect_1.Services
         private List<PostViewModel> GetUserPosts(int userId, SqlConnection contextBD)
         {
             var posts = new List<PostViewModel>();
-            string query = "SELECT id_publicacion, tipo_publicacion, descripcion, archivo_url, fecha_publicacion FROM Publicacion WHERE id_user = @userId";
+            string query = "SELECT id_publicacion, titulo, descripcion, archivo_url, fecha_publicacion FROM Publicacion WHERE id_user = @userId";
 
             using (SqlCommand command = new SqlCommand(query, contextBD))
             {
@@ -106,12 +106,12 @@ namespace Proyect_1.Services
                         };
 
                         // Cerrar el DataReader antes de hacer más consultas
-                        
+
 
                         // Obtener likes y comentarios ahora
                         post.Likes = GetPostLikes(postId, contextBD);
                         post.Comments = GetPostComments(postId, contextBD);
-                        
+
                         posts.Add(post);
                     }
                 }
@@ -155,6 +155,13 @@ namespace Proyect_1.Services
             }
             return comments;
         }
+
+
+        //***************************************
+        //*************************************** EDITAR PERFIL DE USUARIO
+        //***************************************
+
+
         public bool UpdateProfilePicture(string userName, string imageUrl)
         {
             using (SqlConnection contextBD = new SqlConnection(connectionString))
@@ -181,6 +188,74 @@ namespace Proyect_1.Services
                 }
             }
         }
+
+        // Método para actualizar la URL del banner de un usuario
+        public bool UpdateBannerUrl(string userName, string newBannerUrl)
+        {
+            using (SqlConnection contextBD = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    contextBD.Open();
+
+                    // Comenzar la transacción
+                    using (var transaction = contextBD.BeginTransaction())
+                    {
+                        // Actualizar la URL del banner
+                        string query = "UPDATE Usuario SET imagen_baner_url = @newBannerUrl WHERE username = @username";
+                        using (SqlCommand command = new SqlCommand(query, contextBD, transaction))
+                        {
+                            command.Parameters.AddWithValue("@newBannerUrl", newBannerUrl);
+                            command.Parameters.AddWithValue("@username", userName);
+
+                            int rowsAffected = command.ExecuteNonQuery();
+
+                            // Si se actualizó al menos una fila, confirmar la transacción
+                            if (rowsAffected > 0)
+                            {
+                                transaction.Commit();
+                                return true; // Actualización exitosa
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error al actualizar la URL del banner: {ex.Message}");
+                    throw new Exception("Error en la conexión a la base de datos: " + ex.Message);
+                }
+            }
+
+            return false; // No se realizó ninguna actualización
+        }
+
+
+        public void CreatePost(string userName, string title, string content, string mediaUrl = null)
+        {
+            using (SqlConnection contextBD = new SqlConnection(connectionString))
+            {
+                contextBD.Open();
+
+                string query = "INSERT INTO Publicacion (id_user, titulo, descripcion, archivo_url, fecha_publicacion) " +
+                               "VALUES ((SELECT id_user FROM Usuario WHERE username = @username), @titulo, @descripcion, @archivoUrl, @fechaPublicacion)";
+
+                using (SqlCommand command = new SqlCommand(query, contextBD))
+                {
+                    command.Parameters.AddWithValue("@username", userName);
+                    command.Parameters.AddWithValue("@titulo", title);
+                    command.Parameters.AddWithValue("@descripcion", content);
+                    command.Parameters.AddWithValue("@archivoUrl", mediaUrl ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@fechaPublicacion", DateTime.Now);
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+        //***************************************
+        //*************************************** EDITAR PERFIL DE USUARIO
+        //***************************************
 
     }
 
