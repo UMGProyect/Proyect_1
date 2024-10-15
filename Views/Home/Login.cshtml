@@ -40,6 +40,9 @@
                 <button type="submit" class="btn btn-light btn-block">Iniciar Sesión</button>
             </div>
         </form>
+        <div class="d-flex">
+            <a class="btn btn-secondary ms-2" asp-controller="Home" asp-action="Registrar">Registrarse</a>
+        </div>
         <hr />
         <div class="text-center">
             @if (!ViewData.ModelState.IsValid)

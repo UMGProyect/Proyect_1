@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿﻿
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -9,7 +10,7 @@
     <link rel="stylesheet" href="~/Proyect_1.styles.css" asp-append-version="true" />
     <!--Agregado linea 11-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    
+
 
 
 </head>
@@ -17,16 +18,18 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Login">Proyect_1</a>
-
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1"> 
-                    </ul>
-                    <div class="d-flex">
-                        <a class="btn btn-secondary ms-2" asp-controller="Home" asp-action="SystemReport">Levantar Reporte</a>
+                <div id="buttonContainer" style="display:none;">
+                    <button class="rotatebox" onclick="window.location.href='@Url.Action("Logout", "Home")'">Cerrar Sesión</button>
+                </div>
+                <div class="container mt-5 text-center">
+                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                        <ul class="navbar-nav flex-grow-1">
+                        </ul>
+                        <div class="d-flex">
+                            <a class="btn btn-secondary ms-2" asp-controller="Home" asp-action="SystemReport">Levantar Reporte</a>
+                        </div>
                     </div>
                 </div>
-            </div>
         </nav>
     </header>
 
@@ -48,122 +51,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
-    @await RenderSectionAsync("Scripts", required: false)
 
-    <!-- *******************agregado*********************-->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const postButton = document.getElementById('postButton');
-            const postsContainer = document.getElementById('postsContainer');
-            const newPostContent = document.getElementById('newPostContent');
-
-            let posts = [
-                { username: 'Usuario 1', content: 'Esta es una publicación de ejemplo.', time: 'Hace 2 horas', likes: 10, comments: [] },
-                { username: 'Usuario 2', content: 'Me encanta compartir contenido aquí.', time: 'Hace 3 horas', likes: 5, comments: [] }
-            ];
-
-            function renderPosts() {
-                postsContainer.innerHTML = ''; // Limpiar el contenedor antes de renderizar
-                posts.forEach((post, index) => {
-                    const postElement = `
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <strong>${post.username}</strong> - ${post.time}
-                                </div>
-                                <div class="card-body">
-                                    <p>${post.content}</p>
-                                </div>
-                                <div class="card-footer text-muted">
-                                            <a href="#" onclick="likePost(${index})"><i class="fas fa-thumbs-up"></i> (${post.likes})</a> ·
-                                    <a href="#" onclick="showCommentSection(${index})">Comentar</a> ·
-                                    <a href="#">Compartir</a>
-                                </div>
-                                <div id="commentSection-${index}" class="comment-section" style="display: none;">
-                                    <input type="text" id="commentInput-${index}" class="form-control" placeholder="Escribe un comentario...">
-                                    <button class="btn btn-sm btn-primary mt-2" onclick="addComment(${index})">Publicar</button>
-                                             
-                                    <ul id="commentsList-${index}" class="list-group mt-2">
-                                        <!-- Comentarios se renderizarán aquí -->
-                                    </ul>
-                                </div>
-                            </div>`;
-                    postsContainer.insertAdjacentHTML('beforeend', postElement);
-                });
-            }
-
-            // Renderizar publicaciones iniciales
-            renderPosts();
-
-            // Función para agregar una nueva publicación
-            postButton.addEventListener('click', function () {
-                const content = newPostContent.value;
-                if (content.trim() === '') {
-                    alert('Por favor, escribe algo antes de publicar.');
-                    return;
-                }
-
-                const newPost = {
-                    username: 'Mi Usuario',
-                    content: content,
-                    time: 'Justo ahora',
-                    likes: 0,
-                    comments: []
-                };
-
-                posts.unshift(newPost); // Añadir nueva publicación al inicio de la lista
-                renderPosts(); // Volver a renderizar publicaciones
-                newPostContent.value = ''; // Limpiar el campo de texto
-            });
-
-            // Función para agregar un like a una publicación
-            window.likePost = function (index) {
-                posts[index].likes++;
-                renderPosts(); // Volver a renderizar para actualizar el contador de likes
-            };
-
-            // Función para mostrar la sección de comentarios
-            window.showCommentSection = function (index) {
-                const commentSection = document.getElementById(`commentSection-${index}`);
-                commentSection.style.display = commentSection.style.display === 'none' ? 'block' : 'none';
-            };
-
-            // Función para agregar un comentario a una publicación
-            window.addComment = function (index) {
-                const commentInput = document.getElementById(`commentInput-${index}`);
-                const commentText = commentInput.value.trim();
-                if (commentText === '') return;
-
-                posts[index].comments.push(commentText);
-                commentInput.value = ''; // Limpiar campo de comentarios
-                renderComments(index); // Volver a renderizar los comentarios
-            };
-
-            // Función para renderizar los comentarios de una publicación
-            function renderComments(index) {
-                const commentsList = document.getElementById(`commentsList-${index}`);
-                commentsList.innerHTML = ''; // Limpiar lista de comentarios
-                posts[index].comments.forEach(comment => {
-                    const commentElement = `<li class="list-group-item"><div>${comment} <button class="btn btn-link text-danger" onclick="eliminarComentario(this)" title="Eliminar comentario">
-                <i class="fas fa-trash-alt"></i> <!-- Ícono de basurero -->
-            </button> </div></li>`;
-                    commentsList.insertAdjacentHTML('beforeend', commentElement);
-                });
-            }
-            function likePost(button) {
-                // Aquí puedes añadir la lógica para registrar el "like"
-                alert("¡Te gusta esta publicación!");
-            }
-
-            function eliminarComentario(button) {
-                // Aquí puedes añadir la lógica para eliminar el comentario
-                if (confirm("¿Estás seguro de que deseas eliminar este comentario?")) {
-                    // Lógica para eliminar el comentario
-                    const card = button.closest('.card');
-                    card.remove(); // Elimina la tarjeta de la publicación
-                }
-            }
-        });
-    </script>
 
 
 
