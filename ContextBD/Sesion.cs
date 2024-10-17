@@ -89,7 +89,7 @@ namespace Proyect_1.ContextBD
                 {
                     contextBD.Open();
                     // Verificar si el nombre de usuario ya existe
-                    string queryCheck = "SELECT COUNT(*) FROM login WHERE [user] = @name";
+                    string queryCheck = "SELECT COUNT(*) FROM Usuario WHERE [username] = @name";
                     SqlCommand commandCheck = new SqlCommand(queryCheck, contextBD);
                     commandCheck.Parameters.AddWithValue("@name", model.Name);
                     int userExists = (int)commandCheck.ExecuteScalar();
@@ -100,7 +100,7 @@ namespace Proyect_1.ContextBD
                     }
 
                     // Insertar el nuevo usuario en la base de datos
-                    string query = "INSERT INTO login ([user], password) VALUES (@name, @password)";
+                    string query = "INSERT INTO Usuario ([username], password) VALUES (@name, @password)";
                     SqlCommand command = new SqlCommand(query, contextBD);
                     command.Parameters.AddWithValue("@name", model.Name);
                     command.Parameters.AddWithValue("@password", ComputeSha256Hash(model.Password)); // Encriptar la contraseña

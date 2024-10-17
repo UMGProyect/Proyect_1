@@ -11,9 +11,9 @@
 <div class="d-flex justify-content-center align-items-center vh-100">
     <!-- Logo para el registro -->
     <img src="~/images/logoUMG.png" alt="Logo Universidad" class="logo" />
-    <div class="card p-4 shadow" style="width: 100%; max-width: 400px; margin-top: 80px;">
+    <div class="card p-4 shadow login-card">
         <h2 class="text-center mb-4">Registrarse</h2>
-
+       
         <form asp-action="Registro" method="post">
             @if (!ViewData.ModelState.IsValid)
             {
@@ -44,6 +44,7 @@
                 <button type="submit" class="btn btn-primary btn-block">Registrarse</button>
             </div>
         </form>
+        </div >
         <hr />
         <div class="text-center">
             @if (!ViewData.ModelState.IsValid)
